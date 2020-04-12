@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Calendários</h1>
+<p><a href="{% url 'calendario:calendario-create' %}">Novo calendário</a></p>
+
+{% if calendario_list %}
+
+<table class='table table-striped table-hover table-responsive'>
+  <thead>
+    <tr>
+      <th>Ano/semestre</th>
+      <th>Incío das solicitações</th>
+      <th>Fim das solicitações</th>
+      <th>Inicío dos recursos</th>
+      <th>Fim dos recursos</th>
+      <th>Ativo</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for calendario in calendario_list %}
+    <tr>
+      <td><a href="{{ calendario.get_absolute_url }}">{{ calendario }}</a></td>
+      <td>{{ calendario.inicio_solicitacoes|date:"D d/m/Y" }}</td>
+      <td>{{ calendario.fim_solicitacoes|date:"D d/m/Y" }}</td>
+      <td>{{ calendario.inicio_recursos|date:"D d/m/Y" }}</td>
+      <td>{{ calendario.fim_recursos|date:"D d/m/Y" }}</td>
+      <td>{{ calendario.is_active }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+
+</table>
+
+{% else %}
+<p>Não há calendários cadastrados.</p>
+{% endif %}
+{% endblock %}

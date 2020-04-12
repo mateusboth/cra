@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Calendário: {{ calendario }} </h1>
+<ul>
+{% for key, val in calendario.get_fields %}
+  <li><strong>{{ key }}</strong>: {{ val }}</li>
+{% endfor %}
+</ul>
+
+<button class="btn btn-success update-confirm"><a href="{{ calendario.get_absolute_url }}update">Editar</a></button>
+<form action="{% url 'calendario:calendario-delete' calendario.slug %}" method="post", onsubmit="window.ConfirmDelete()" class="delete-form">
+    {% csrf_token %}
+    <input type="hidden" name="calendario_id" value="{{ calendario.id }}" />
+    <button type="submit" class="btn btn-danger">
+        Delete
+    </button>
+</form>
+{% endblock %}
+
+

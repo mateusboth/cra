@@ -1,0 +1,32 @@
+header{
+    background-color: #00510F;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-image: linear-gradient(to right,#17882C 0,#00510F 100%);
+    color: #FFF;
+    margin-bottom: 15px;
+}
+
+a:any-link{
+    color: black
+}
+
+.title-campus{
+    color: #FFF;
+}
+
+.sidebar-nav {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+    background-color: #EAEBEE;
+    color: #00500F;
+}
+
+.sidebar-nav a:any-link {
+    color: #00500F;
+}
+
+.delete-form {
+    display: inline;
+}
