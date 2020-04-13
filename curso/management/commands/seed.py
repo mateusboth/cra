@@ -37,7 +37,7 @@ def clear_data():
 def create_curso():
     """Creates an curso object combining different elements from the list"""
     logger.info("Creating curso")
-    print('curso cse')
+    print('curso se')
     cursos = [
         {
             'nome': 'ENGENHARIA METALÚRGICA',

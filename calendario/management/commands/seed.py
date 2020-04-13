@@ -43,7 +43,6 @@ def create_calendario():
     # street_flats = ["#221 B", "#101 A", "#550I", "#420G", "#A13"]
     # street_localities = ["Bakers Street", "Rajori Gardens", "Park Street", "MG Road", "Indiranagar"]
     # pincodes = ["101234", "101232", "101231", "101236", "101239"]
-    print('calendario')
     calendarios = [
         {
             'ano': '2018',
@@ -96,7 +95,6 @@ def create_calendario():
 def create_curso():
     """Creates an curso object combining different elements from the list"""
     logger.info("Creating curso")
-    print('curso cse')
     cursos = [
         {
             'nome': 'ENGENHARIA METALÚRGICA',
