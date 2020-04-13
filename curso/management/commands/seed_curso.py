@@ -39,6 +39,10 @@ def clear_data():
 def create_curso():
     """Creates an curso object combining different elements from the list"""
     logger.info("Creating curso")
+<<<<<<< HEAD:curso/management/commands/seed_curso.py
+=======
+    print('curso se')
+>>>>>>> d3a0d50121cd8c97515c2ca0539a7489e754c304:curso/management/commands/seed.py
     cursos = [
         {
             'nome': 'ENGENHARIA METALÚRGICA',
