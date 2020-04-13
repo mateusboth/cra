@@ -2,7 +2,7 @@
 import logging
 from django.core.management.base import BaseCommand
 import random
-from curso.models import Curso
+from curso.models import Curso, Semestre, Disciplina
 
 
 logger = logging.getLogger(__name__)
@@ -32,12 +32,13 @@ def clear_data():
     """Deletes all the table data"""
     logger.info("Delete curso instances")
     Curso.objects.all().delete()
+    Disciplina.objects.all().delete()
+    Semestre.objects.all().delete()
 
 
 def create_curso():
     """Creates an curso object combining different elements from the list"""
     logger.info("Creating curso")
-    print('curso cse')
     cursos = [
         {
             'nome': 'ENGENHARIA METALÚRGICA',
@@ -80,6 +81,22 @@ def create_curso():
     # return curso
 
 
+def create_disciplina():
+    disciplinas = [
+        {
+            'codigo': 'CAX-MTM001',
+            'nome': 'Matemática Elementar',
+            # 'curso': '1'
+        }
+    ]
+    cursos = Curso.objects.all()
+    for disc in disciplinas:
+        disciplina = Disciplina(**disc)
+        disciplina.curso.add(cursos[0])
+        disciplina.save()
+
+        logger.info("%(disciplina)s created.")
+
 def run_seed(self, mode):
     """ Seed database based on mode
 
@@ -94,6 +111,7 @@ def run_seed(self, mode):
     # Creating 15 calendari
     # for i in range(15):
     create_curso()
+    create_disciplina()
 
 # TODO adicionar no usuario talvez?
 # def create_django_contrib_auth_models_group(**kwargs):

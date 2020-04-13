@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from .models import Curso  # , Disciplina
+from .models import Curso, Disciplina
 # Create your views here.
 
 
@@ -73,14 +73,14 @@ class CursoDetailView(DetailView):
 #     fields = '__all__'
 #     permission_required = 'user.staff'
 
-# class DisciplinasGenericList(PermissionRequiredMixin, ListView):
-#     '''Lista de todas as disciplinas'''
-#     model = Disciplina
-#     paginate_by = 30
-#     permission_required = 'user.staff'
+class DisciplinasGenericList(ListView):
+    '''Lista de todas as disciplinas'''
+    model = Disciplina
+    paginate_by = 50
+    # permission_required = 'user.staff'
 
 
-# class DisciplinaDetailView(PermissionRequiredMixin, DetailView):
-#     '''Detalhes da disciplinas especifica'''
-#     model = Disciplina
-#     permission_required = 'user.staff'
+class DisciplinaDetailView(DetailView):
+    '''Detalhes da disciplinas especifica'''
+    model = Disciplina
+    # permission_required = 'user.staff'

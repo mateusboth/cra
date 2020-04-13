@@ -4,7 +4,6 @@ import logging
 from django.core.management.base import BaseCommand
 import random
 from calendario.models import Calendario
-from curso.models import Curso
 
 
 logger = logging.getLogger(__name__)
@@ -34,8 +33,6 @@ def clear_data():
     """Deletes all the table data"""
     logger.info("Delete Calendario instances")
     Calendario.objects.all().delete()
-    Curso.objects.all().delete()
-
 
 def create_calendario():
     """Creates an calendario object combining different elements from the list"""
@@ -93,50 +90,6 @@ def create_calendario():
         calendario.save()
         logger.info("%(calendario)s calendario created.")
     # return calendario
-def create_curso():
-    """Creates an curso object combining different elements from the list"""
-    logger.info("Creating curso")
-    print('curso cse')
-    cursos = [
-        {
-            'nome': 'ENGENHARIA METALÚRGICA',
-            'abreviacao': 'EM',
-            'matriz': '2016',
-            'is_active': False,
-        }, {
-            'nome': 'ENGENHARIA METALÚRGICA',
-            'abreviacao': 'EM',
-            'matriz': '2019',
-            'is_active': True,
-        }, {
-            'nome': 'ENGENHARIA DE PRODUÇÃO',
-            'abreviacao': 'EP',
-            'matriz': '2016',
-        }, {
-            'nome': 'LICENCIATURA EM MATEMÁTICA',
-            'abreviacao': 'LM',
-            'matriz': '2017',
-            'is_active': False,
-        }, {
-            'nome': 'LICENCIATURA EM MATEMÁTICA',
-            'abreviacao': 'LM',
-            'matriz': '2019',
-        }, {
-            'nome': 'TECNOLOGIA EM PROCESSOS GERENCIAIS',
-            'abreviacao': 'TPG',
-            'matriz': '2019',
-        }, {
-            'nome': 'TECNOLOGIA EM PROCESSOS METALÚRGICOS',
-            'abreviacao': 'TPM',
-            'matriz': '2017',
-        },
-    ]
-
-    for cal in cursos:
-        curso = Curso(**cal)
-        curso.save()
-        logger.info("%(curso)s created.")
-    # return curso
 
 def run_seed(self, mode):
     """ Seed database based on mode

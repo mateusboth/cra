@@ -33,3 +33,42 @@ class Curso(models.Model):
 
     def get_absolute_url(self):
         return reverse("curso:curso-detail", kwargs={"slug": self.slug})
+
+class Semestre(models.Model):
+    SEMESTRES = (
+        ('PEN', 'Pendente'),
+        ('OPT', 'Optativa'),
+        ('1', '1º Semestre'),
+        ('2', '2º Semestre'),
+        ('3', '3º Semestre'),
+        ('4', '4º Semestre'),
+        ('5', '5º Semestre'),
+        ('6', '6º Semestre'),
+        ('7', '7º Semestre'),
+        ('8', '8º Semestre'),
+        ('9', '9º Semestre'),
+        ('10', '10º Semestre'),
+    )
+
+    curso = models.ForeignKey("Curso", on_delete=models.CASCADE)
+    disciplina = models.ForeignKey("Disciplina", on_delete=models.CASCADE)
+    Semestre = models.CharField(
+        max_length=3,
+        choices=SEMESTRES,
+        default='PEN',
+    )
+
+
+class Disciplina(models.Model):
+    """Modelo disciplina"""
+    codigo = models.CharField(("Código"), max_length=12, primary_key=True)
+    nome = models.CharField(("Nome da disciplina"), max_length=50)
+    curso = models.ManyToManyField('Curso', verbose_name=(
+        "Curso"), through='Semestre')
+
+    def __str__(self):
+        return f'{self.codigo} - {self.nome}'
+
+    # def get_absolute_url(self):
+    #     """Url para o template com detalhes de uma disciplinas especifica"""
+    #     return reverse("cc:disciplina-detail", kwargs={"slug": self.slug})
