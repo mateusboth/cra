@@ -3,13 +3,18 @@
 {% block content %}
 
 {% load crispy_forms_tags %}
-<form action="" method="post">
+{% if form_title %}
+
+<h3>  {{ form_title }} </h3>
+{% endif %}
+<form action="" method="post" class="col-md-4" novalidate>
     {% csrf_token %}
     <table>
         {{ form|crispy }}
     </table>
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Confirmar" class="btn btn-success" />
 
 </form>
+
 
 {% endblock content %}

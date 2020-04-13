@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'coverage',
 
-    'calendario'
+    'calendario',
+    'curso',
 ]
 
 MIDDLEWARE = [
