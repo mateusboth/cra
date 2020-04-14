@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>Usuário e senha não conferem. Por favor tente novamente.
+</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Sua conta não tem acesso a esta página. Para prosseguir,
+     por favor efetue o login com uma conta que tenha.
+    </p>
+    {% else %}
+    <p>Efetue o login para vizualizar a página.</p>
+    {% endif %}
+{% endif %}
+
+
+{% load crispy_forms_tags %}
+<form action="{% url 'login' %}" method="post" class="col-md-4" novalidate>
+    {% csrf_token %}
+    <table>
+        {{ form|crispy }}
+    </table>
+    <input type="submit" value="Login" class="btn btn-success" />
+    <input type="hidden" name="next" value="{{ next }}" />
+
+</form>
+{# Assumes you setup the password_reset view in your URLconf #}
+<p><a href="{% url 'password_reset' %}">Esqueceu a senha?</a></p>
+<p><a href="{% url 'signup' %}">Cadastre-se</a></p>
+
+
+{% endblock %}

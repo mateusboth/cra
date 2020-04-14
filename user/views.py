@@ -10,7 +10,7 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-# User = get_user_model()
+User = get_user_model()
 
 # Create your views here.
 
@@ -28,23 +28,32 @@ def home(request):
         request, 'home.html', context=context
     )
 
-def signup_view(request):
-    if request.method  == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            matricula = form.cleaned_data.get('matricula')
-            user.curso = form.cleaned_data.get('curso')
-            password = form.cleaned_data.get('password1')
-            user.nome_completo = form.cleaned_data.get('nome_completo')
-            user.email = form.cleaned_data.get('email') 
-            user = authenticate(username=matricula, password=password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
+# def signup_view(request):
+#     if request.method  == 'POST':
+#         form = SignUpForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             matricula = form.cleaned_data.get('matricula')
+#             user.curso = form.cleaned_data.get('curso')
+#             password = form.cleaned_data.get('password1')
+#             user.nome_completo = form.cleaned_data.get('nome_completo')
+#             user.email = form.cleaned_data.get('email') 
+#             user = authenticate(username=matricula, password=password)
+#             login(request, user)
+#             return redirect('home')
+#     else:
+#         form = SignUpForm()
+#     return render(request, 'registration/signup.html', {'form': form})
 
+class UserCreateView(CreateView):
+    template_name = 'create_form_generic.html'
+    form_class = SignUpForm
+    
+    def get_context_data(self, **kwargs):
+        """Adiciona form_title para ser usado nos templates"""
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context["form_title"] = 'Registre-se'
+        return context
 
 class UsersListView(PermissionRequiredMixin, generic.ListView):
     model = User
