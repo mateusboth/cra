@@ -2,8 +2,9 @@
 import logging
 from django.core.management.base import BaseCommand
 import random
-from curso.models import Curso, Semestre, Disciplina
-
+import csv
+from curso.models import Curso, Disciplina
+from django.core.exceptions import ObjectDoesNotExist
 
 logger = logging.getLogger(__name__)
 
@@ -33,16 +34,11 @@ def clear_data():
     logger.info("Delete curso instances")
     Curso.objects.all().delete()
     Disciplina.objects.all().delete()
-    Semestre.objects.all().delete()
 
 
 def create_curso():
     """Creates an curso object combining different elements from the list"""
     logger.info("Creating curso")
-<<<<<<< HEAD:curso/management/commands/seed_curso.py
-=======
-    print('curso se')
->>>>>>> d3a0d50121cd8c97515c2ca0539a7489e754c304:curso/management/commands/seed.py
     cursos = [
         {
             'nome': 'ENGENHARIA METALÚRGICA',
@@ -86,21 +82,37 @@ def create_curso():
 
 
 def create_disciplina():
-    disciplinas = [
-        {
-            'codigo': 'CAX-MTM001',
-            'nome': 'Matemática Elementar',
-            # 'curso': '1'
-        }
-    ]
-    cursos = Curso.objects.all()
-    for disc in disciplinas:
-        disciplina = Disciplina(**disc)
-        disciplina.curso.add(cursos[0])
-        disciplina.save()
+    # cursos = Curso.objects.all()
+    # disciplinas = [
+    #     {
+    #         'codigo': 'CAX-MTM001',
+    #         'nome': 'Matemática Elementar',
+    #         # 'curso': cursos[0].pk
+    #     }
+    # ]
+    # for disc in disciplinas:
+    #     disciplina = Disciplina(**disc)
+    #     disciplina.save()
+    #     disciplina.curso.add(cursos[0])
 
-        logger.info("%(disciplina)s created.")
+    #     logger.info("%(disciplina)s created.")
 
+    with open('curso/management/commands/disciplinas.csv', encoding="ISO-8859-1") as csvfile:
+        disciplinas = csv.reader(csvfile, quotechar='|')
+        for row in disciplinas:            
+            if row[0] == 'curso':
+                curso = Curso(nome=row[1], abreviacao=row[2], matriz=row[3], is_active=row[4])
+                curso.save()
+            else:
+                try:
+                    disciplina= Disciplina.objects.get(codigo=row[0])
+                    disciplina.curso.add(curso)
+                except ObjectDoesNotExist:
+                    disciplina = Disciplina(codigo=row[0], nome=row[1])
+                    disciplina.save()
+                    disciplina.curso.add(curso)
+                   
+        
 def run_seed(self, mode):
     """ Seed database based on mode
 
@@ -114,7 +126,7 @@ def run_seed(self, mode):
 
     # Creating 15 calendari
     # for i in range(15):
-    create_curso()
+    # create_curso()
     create_disciplina()
 
 # TODO adicionar no usuario talvez?

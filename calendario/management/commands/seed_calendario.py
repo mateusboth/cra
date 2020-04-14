@@ -89,52 +89,7 @@ def create_calendario():
         calendario.save()
         logger.info("%(calendario)s calendario created.")
     # return calendario
-<<<<<<< HEAD:calendario/management/commands/seed_calendario.py
-=======
-def create_curso():
-    """Creates an curso object combining different elements from the list"""
-    logger.info("Creating curso")
-    cursos = [
-        {
-            'nome': 'ENGENHARIA METALÚRGICA',
-            'abreviacao': 'EM',
-            'matriz': '2016',
-            'is_active': False,
-        }, {
-            'nome': 'ENGENHARIA METALÚRGICA',
-            'abreviacao': 'EM',
-            'matriz': '2019',
-            'is_active': True,
-        }, {
-            'nome': 'ENGENHARIA DE PRODUÇÃO',
-            'abreviacao': 'EP',
-            'matriz': '2016',
-        }, {
-            'nome': 'LICENCIATURA EM MATEMÁTICA',
-            'abreviacao': 'LM',
-            'matriz': '2017',
-            'is_active': False,
-        }, {
-            'nome': 'LICENCIATURA EM MATEMÁTICA',
-            'abreviacao': 'LM',
-            'matriz': '2019',
-        }, {
-            'nome': 'TECNOLOGIA EM PROCESSOS GERENCIAIS',
-            'abreviacao': 'TPG',
-            'matriz': '2019',
-        }, {
-            'nome': 'TECNOLOGIA EM PROCESSOS METALÚRGICOS',
-            'abreviacao': 'TPM',
-            'matriz': '2017',
-        },
-    ]
 
-    for cal in cursos:
-        curso = Curso(**cal)
-        curso.save()
-        logger.info("%(curso)s created.")
-    # return curso
->>>>>>> d3a0d50121cd8c97515c2ca0539a7489e754c304:calendario/management/commands/seed.py
 
 def run_seed(self, mode):
     """ Seed database based on mode
@@ -150,7 +105,6 @@ def run_seed(self, mode):
     # Creating 15 calendari
     # for i in range(15):
     create_calendario()
-    create_curso()
 
 # TODO adicionar no usuario talvez?
 # def create_django_contrib_auth_models_group(**kwargs):
