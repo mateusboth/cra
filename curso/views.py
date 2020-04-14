@@ -68,10 +68,10 @@ class CursoDetailView(DetailView):
 #     permission_required = 'user.staff'
 #     template_name = 'create_form_generic.html'
 
-# class DisciplinaUpdate(PermissionRequiredMixin, UpdateView):
+# class DisciplinaUpdate(UpdateView):
 #     Model = Disciplina
 #     fields = '__all__'
-#     permission_required = 'user.staff'
+#     # permission_required = 'user.staff'
 
 class DisciplinasGenericList(ListView):
     '''Lista de todas as disciplinas'''

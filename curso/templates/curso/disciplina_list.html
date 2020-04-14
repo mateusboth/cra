@@ -1,20 +1,22 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Disciplinas</h1>
-<p><a href="">Nova disciplina</a></p>
+<h1>Disciplinas</h1>
+{% comment %} <p><a href="">Nova disciplina</a></p> {% endcomment %}
 
-    {% if disciplina_list %}    
-
-      {% for disciplina in disciplina_list %}
-      <li>
-        <a href="{{ disciplina.get_absolute_url }}">{{ disciplina.codigo }}</a> ({{disciplina.nome}} {{disciplina.curso}}) - <a href="{{ disciplina.get_absolute_url }}/update">Editar</a>
-      </li>
+{% if disciplina_list %}
+  <ul>
+  {% for disciplina in disciplina_list %}
+    <li>
+      <a href="{{ disciplina.get_absolute_url }}">{{ disciplina.codigo }} {{disciplina.nome}}</a>
+      {% for curso in disciplina.curso.all %}
+       {{ curso }}
       {% endfor %}
+    </li>
+  {% endfor %}
+  </ul>
 
-    </ul>
-
-    {% else %}
-      <p>There are no cursos cadastrados.</p>
-    {% endif %}       
+{% else %}
+  <p>There are no cursos cadastrados.</p>
+{% endif %}
 {% endblock %}

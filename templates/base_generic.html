@@ -14,8 +14,9 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
-    <!-- favicon -->
-    <link rel='shortcut icon' type='image/x-icon' href='https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme/favicons/favicon-16x16.png' />
+  <!-- favicon -->
+  <link rel='shortcut icon' type='image/x-icon'
+    href='https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme/favicons/favicon-16x16.png' />
 
 </head>
 
@@ -82,6 +83,7 @@
           <ul class="sidebar-nav">
             <li><a href="{% url 'calendario:calendarios'%}">Calendários</a></li>
             <li><a href="{% url 'curso:cursos'%}">Cursos</a></li>
+            <li><a href="{% url 'curso:disciplinas'%}">Disciplinas</a></li>
             {% comment %} <li>Staff</li>
             <li><a href="{% url 'cursos'%}">Cursos</a></li>
             <li><a href="{% url 'cc:disciplinas'%}">Disciplinas</a></li>
