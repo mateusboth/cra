@@ -11,7 +11,7 @@ urlpatterns = [
     #disciplinas
     # path('disciplina/create/', views.DisciplinaCreate.as_view(), name='disciplina-create'),
     path('disciplinas', views.DisciplinasGenericList.as_view(), name='disciplinas'),
-    path('disciplina/<slug:slug>', views.DisciplinaDetailView.as_view(), name='disciplina-detail'),
+    path('disciplina/<slug:pk>', views.DisciplinaDetailView.as_view(), name='disciplina-detail'),
     # path('disciplina/<slug:slug>/update/', views.DisciplinaUpdate.as_view(), name='disciplina-update'),
 ]
 

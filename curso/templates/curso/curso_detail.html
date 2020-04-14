@@ -8,14 +8,20 @@
 </p>
 
 <button class="btn btn-success update-confirm"><a href="{{ curso.get_absolute_url }}update">Editar</a></button>
-<form action="{% url 'curso:curso-delete' curso.slug %}" method="post", onsubmit="window.ConfirmDelete()" class="delete-form">
+<form action="{% url 'curso:curso-delete' curso.slug %}" method="post" , onsubmit="window.ConfirmDelete()"
+    class="delete-form">
     {% csrf_token %}
     <input type="hidden" name="curso_id" value="{{ curso.id }}" />
     <button type="submit" class="btn btn-danger">
         Delete
     </button>
 </form>
-
-
+<hr>
+<h3>Disciplinas </h3>
+<ul>
+    {% for disciplina in curso.disciplina_set.all %}
+    <li> {{ disciplina }} </li>
+    {% endfor %}
+</ul>
 </div>
 {% endblock %}

@@ -43,6 +43,6 @@ class Disciplina(models.Model):
     def __str__(self):
         return f'{self.codigo} - {self.nome}'
 
-    # def get_absolute_url(self):
-    #     """Url para o template com detalhes de uma disciplinas especifica"""
-    #     return reverse("cc:disciplina-detail", kwargs={"slug": self.slug})
+    def get_absolute_url(self):
+        """Url para o template com detalhes de uma disciplinas especifica"""
+        return reverse("curso:disciplina-detail", kwargs={"pk": self.codigo})
