@@ -21,6 +21,7 @@ urlpatterns = [
     path('calendario/', include('calendario.urls')),
     path('curso/', include('curso.urls')),
     path('user/', include('user.urls')),
+    path('cc/', include('cc.urls')),
 ]
 
 #Add Django site authentication urls (for login, logout, password management)

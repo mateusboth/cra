@@ -7,18 +7,18 @@ app_name = 'cc'
 
 urlpatterns = [
     # path('', views.index, name='index'),
-    path('solicitacao/create/', views.SolicitacaoCreate.as_view(),
+    path('create/', views.SolicitacaoCreate.as_view(),
          name='solicitacao-create'),
-    path('solicitacoes', views.SolicitacoesGenericList.as_view(), name='solicitacoes'),
-    path('solicitacao/<int:pk>', views.SolicitacaoDetailView.as_view(),
+    path('', views.SolicitacoesGenericList.as_view(), name='solicitacoes'),
+    path('<int:pk>', views.SolicitacaoDetailView.as_view(),
          name='solicitacao-detail'),
     #homologação
-    path('solicitacao/<int:pk>/homologacao/',
+    path('<int:pk>/homologacao/',
          views.HomologacaoCreate.as_view(), name='homologacao-create'),
     #resultado
-    path('solicitacao/<int:pk_sol>/resultado/<int:pk>',
+    path('<int:pk_sol>/resultado/<int:pk>',
          views.ResultadoUpdate.as_view(), name='resultado-update'),
     #recurso
-    path('solicitacao/<int:pk_sol>/resultado/<int:pk>/recurso/create',
+    path('<int:pk_sol>/resultado/<int:pk>/recurso/create',
          views.RecursoCreate.as_view(), name='recurso-create'),
 ]

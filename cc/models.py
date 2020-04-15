@@ -4,13 +4,13 @@
  Depende do app curso, com Modelos Curso e Disciplina"""
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
 from curso.models import Curso, Disciplina
 from calendario.models import Calendario
 from cra.snippets import unique_slugify
-from django.core.validators import FileExtensionValidator
 User = get_user_model()
 
 
@@ -29,7 +29,7 @@ class Solicitacao(models.Model):
     cursou_anteriormente = models.BooleanField(
         ("Cursou anteriormente a disciplina solicitada"), blank=True, null=True)
     homologada = models.BooleanField(blank=True, null=True)
-    #semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE)
+    semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-data_solicitacao', 'solicitante']
@@ -44,6 +44,7 @@ class Solicitacao(models.Model):
     def get_absolute_url(self):
         """Busca url de uma solicitação especifica"""
         return reverse("cc:solicitacao-detail", kwargs={"pk": self.pk})
+    
 
 
 def validate_nota(nota):
