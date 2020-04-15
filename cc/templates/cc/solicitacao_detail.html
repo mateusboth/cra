@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Solicitação: </h1>
+<p>Aluno: {{ solicitacao.solicitante }}</p>
+<p>Disciplina: {{solicitacao.disciplina}} </p>
+<p>Justificativa: {{ solicitacao.justificativa }} </p>
+<p>Homologada: {{ solicitacao.homologada }} </p>
+<p>Avaliador: {{ solicitacao.resultado.avaliador }} </p>
+<p>Nota: {{ solicitacao.resultado.nota }} </p>
+<p>Nota pos recursos: {{ solicitacao.recurso }} </p>
+<p>Resultado: {{ solicitacao.resultado }} </p>
+
+{% endblock %}

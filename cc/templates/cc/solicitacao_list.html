@@ -1,0 +1,44 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Solicitações</h1>
+
+
+<p><a href="{% url 'cc:solicitacao-create' %}">Nova solicitação</a></p>
+
+{% if solicitacao_list %}
+  <table>
+    <thead>
+      <tr>
+      {% if perms.user.avaliador or perms.user.is_staff %}
+        <th>Curso</th>
+        <th>Solicitante</th>
+      {% endif %}
+        <th>Disciplina</th>
+        <th>Homologado</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    {% for solicitacao in solicitacao_list %}
+      {% if solicitacao.solicitante.get_full_name == user.get_full_name %}
+        <tr>
+          <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
+          <td>{{ solicitacao.homologado }}</td>
+          <td>{{ solicitacao.resultado }}</td>
+        </tr>
+      {% elif perms.user.avaliador or perms.user.is_staff %}
+        <tr>
+          <td>{{ solicitacao.solicitante.curso }}</td>
+          <td>{{ solicitacao.solicitante }}</td>
+          <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
+          <td><a href="{{solicitacao.get_absolute_url}}/homologacao" >{{ solicitacao.homologada }}</a></td>
+          <td><a href="{{solicitacao.resultado.get_update_url}}">{{ solicitacao.resultado }}</a></td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+
+{% else %}
+<p>Não solicitações registradas.</p>
+{% endif %}
+{% endblock %}

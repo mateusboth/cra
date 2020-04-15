@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Disciplinas</h1>
+<p><a href="{% url 'cc:disciplina-create' %}">Nova disciplina</a></p>
+
+    {% if disciplina_list %}    
+
+      {% for disciplina in disciplina_list %}
+      <li>
+        <a href="{{ disciplina.get_absolute_url }}">{{ disciplina.codigo }}</a> ({{disciplina.nome}} {{disciplina.curso}}) - <a href="{{ disciplina.get_absolute_url }}/update">Editar</a>
+      </li>
+      {% endfor %}
+
+    </ul>
+
+    {% else %}
+      <p>There are no cursos cadastrados.</p>
+    {% endif %}       
+{% endblock %}

@@ -58,8 +58,9 @@
         {% block sidebar %}
         <ul class="sidebar-nav">
           {% comment %} <li><a href="{% url 'home' %}">Home</a></li>
+          {% endcomment %}
           <li><a href="/admin">admin</a></li>
-          <li><a href=" {% url 'cc:solicitacoes' %}">Solicitacões</a></li> {% endcomment %}
+          <li><a href=" {% url 'cc:solicitacoes' %}">Solicitacões</a></li> 
         </ul>
         <ul class="sidebar-nav">
           {% if user.is_authenticated %}

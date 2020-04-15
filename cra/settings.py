@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'calendario',
     'curso',
     'user',
+    'cc',
 ]
 
 AUTH_USER_MODEL = 'user.User'
