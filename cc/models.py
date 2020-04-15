@@ -20,16 +20,16 @@ class Solicitacao(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
     justificativa = models.TextField(("Justificativa para o pedido"),
-                                     help_text="O candidato deve explicar os motivos para solicitar a prova, por exemplo: experiência profissional, cursos não regulares, aproveitamentos indeferidos, entre outros.", blank=True, null=True)
+                                     help_text="O candidato pode explicar os motivos para solicitar a prova, por exemplo: experiência profissional, cursos não regulares, aproveitamentos indeferidos, entre outros.", blank=True, null=True)
     documentos = models.FileField(("Documentos comprobatorios de conhecimentos"),
                                   upload_to=None, max_length=100, blank=True, null=True,
-                                  validators=[FileExtensionValidator(['pdf'])])
+                                  validators=[FileExtensionValidator(['.pdf'])])
     data_solicitacao = models.DateTimeField(
         ("Data da solicitação"), auto_now_add=True)
     cursou_anteriormente = models.BooleanField(
         ("Cursou anteriormente a disciplina solicitada"), blank=True, null=True)
     homologada = models.BooleanField(blank=True, null=True)
-    semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE)
+    # semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-data_solicitacao', 'solicitante']

@@ -28,3 +28,6 @@ urlpatterns = [
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
 ]
+# url pra select2, busca ao solicitar disicplinas
+urlpatterns += [path('select2/', include('django_select2.urls')),]
+

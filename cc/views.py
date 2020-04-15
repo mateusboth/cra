@@ -24,6 +24,7 @@ class SolicitacaoCreate(LoginRequiredMixin, CreateView):
 class SolicitacoesGenericList(LoginRequiredMixin, generic.ListView):
     model = Solicitacao
     paginate_by = 20
+    #TODO filtrar aqui lista de disciplinas com base no usuario
 
 class SolicitacaoDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Solicitacao

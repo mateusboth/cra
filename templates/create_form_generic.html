@@ -1,13 +1,15 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+{{ form.media.css }}
+{{ form.media }}
 
 {% load crispy_forms_tags %}
 {% if form_title %}
 
 <h3>  {{ form_title }} </h3>
 {% endif %}
-<form action="" method="post" class="col-md-4" novalidate>
+<form action="" method="post" class="col-md-6" novalidate>
     {% csrf_token %}
     <table>
         {{ form|crispy }}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # externos
     'crispy_forms',
     'coverage',
+    'django_select2',
 
     'calendario',
     'curso',
