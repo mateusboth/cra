@@ -61,7 +61,6 @@ class UsersListView(PermissionRequiredMixin, generic.ListView):
 
 class UserDetailView(PermissionRequiredMixin, generic.DetailView):
     model = User
-    fields = '__all__'
     context_object_name = 'usuario'
     permission_required = 'user.staff'
 

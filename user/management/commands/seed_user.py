@@ -42,10 +42,10 @@ def clear_data():
 
 def create_group():
     """Cria group avaliador e coordenadores com permissão personalizadas"""
-    avaliadores, created = Group.objects.get_or_create(name='avaliadores')
+    avaliadores, created = Group.objects.get_or_create(name='Avaliadores')
     proj_add_perm = Permission.objects.get(codename='can_add_resultado')
     avaliadores.permissions.add(proj_add_perm)
-    coordenadores, created = Group.objects.get_or_create(name='coordenadores')
+    coordenadores, created = Group.objects.get_or_create(name='Coordenadores')
     proj_add_perm = Permission.objects.get(codename='can_add_avaliador')
     coordenadores.permissions.add(proj_add_perm)
 

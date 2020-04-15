@@ -63,11 +63,11 @@
         </ul>
         <ul class="sidebar-nav">
           {% if user.is_authenticated %}
-          {% comment %} <li>User: {{ user.get_full_name }}</li> {% endcomment %}
+          <li>User: {{ user.get_full_name }}</li>
           {% comment %} <li><a href="{% url 'my-borrowed' %}">My Borrowed</a></li> {% endcomment %}
-          {% comment %} <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li> {% endcomment %}
+          <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
           {% else %}
-          {% comment %} <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li> {% endcomment %}
+          <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
           {% endif %}
         </ul>
 
