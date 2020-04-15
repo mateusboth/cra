@@ -6,6 +6,8 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.urls import reverse
 from cra.snippets import unique_slugify
 from .managers.UserManager import UserManager
+from django.contrib.auth.models import Group, Permission
+
 
 from curso.models import Curso
 
@@ -68,12 +70,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         """
-        Criar slug e adiciona permissões se avaliador ou coordenador
+        Criar slug e adiciona permissões/groups se avaliador ou coordenador
         """
         slug_str = f'{self.nome_completo} {self.curso}'
         unique_slugify(self, slug_str)
-        if self.is_avaliador:
-            self.user_permissions.add('can_add_resultado')
-        if self.is_coordenador:
-            self.user_permissions.add('can_add_avaliador')
+
         super(User, self).save(*args, **kwargs)
+        if self.is_avaliador:
+            add_group = Group.objects.get(name='Avaliadores')
+            self.groups.add(add_group)
+            # add_res = Permission.objects.get(codename='can_add_resultado')
+            # self.user_permissions.add(add_res)
+        if self.is_coordenador:
+            add_group = Group.objects.get(name='Coordenadores')
+            self.groups.add(add_group)
+            # add_aval = Permission.objects.get(codename='can_add_avaliador')
+            # self.user_permissions.add(add_aval)
+

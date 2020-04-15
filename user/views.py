@@ -14,19 +14,19 @@ User = get_user_model()
 
 # Create your views here.
 
-@login_required
-def home(request):
-    users =  User.objects.all()
-    num_user = users.count()
-    context = {
-        'users': users,
-        'num_user': num_user
-        }
-    print(f'context: {context}')
+# @login_required
+# def home(request):
+#     users =  User.objects.all()
+#     num_user = users.count()
+#     context = {
+#         'users': users,
+#         'num_user': num_user
+#         }
+#     print(f'context: {context}')
 
-    return render(
-        request, 'home.html', context=context
-    )
+#     return render(
+#         request, 'home.html', context=context
+#     )
 
 # def signup_view(request):
 #     if request.method  == 'POST':
@@ -57,7 +57,6 @@ class UserCreateView(CreateView):
 
 class UsersListView(PermissionRequiredMixin, generic.ListView):
     model = User
-    fields = '__all__'
     permission_required = 'user.staff'
 
 class UserDetailView(PermissionRequiredMixin, generic.DetailView):

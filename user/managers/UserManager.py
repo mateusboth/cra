@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Group, Permission
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
