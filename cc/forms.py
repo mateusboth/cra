@@ -2,6 +2,7 @@
 from datetime import date, timedelta
 from django import forms
 from .models import Solicitacao, Disciplina, Resultado, Recurso
+from calendario.models import Calendario
 
 from django_select2 import forms as s2forms
 
@@ -13,7 +14,7 @@ class SolicitacaoForm(forms.ModelForm):
         fields = ['disciplina', 'justificativa', 'documentos']
         widgets = {
             'disciplina': s2forms.ModelSelect2Widget(model=Disciplina,
-                            search_fields=['nome__icontains', 'codigo__icontains']),
+                                                     search_fields=['nome__icontains', 'codigo__icontains']),
         }
 
     def __init__(self, *args, **kwargs):
@@ -21,29 +22,30 @@ class SolicitacaoForm(forms.ModelForm):
         user = kwargs.pop('user')
         super(SolicitacaoForm, self).__init__(*args, **kwargs)
         self.instance.solicitante = user
+        self.instance.semestre_solicitacao = Calendario.objects.filter(
+            is_active=True).first()
         if not user.is_staff:  # filtra as disciplinas com base no curso do user
             self.fields['disciplina'].queryset = Disciplina.objects.filter(
                 curso=user.curso)
-        self.fields['disciplina'].help_text = "Digite CAX para exibir todas as disciplinas"
+        self.fields['disciplina'].help_text = "Digite CAX para exibir todas as disciplinas. Disciplinas com acento deve ser maisuculas, ex: TÉCN"
 
     def clean(self, *args, **kwargs):
-        """Impede pedidos repetidos, e mais de 3 pedidos em 30 dias"""
+        """Impede pedidos repetidos, e mais de 3 pedidos em calendario vigente"""
         super().clean(*args, **kwargs)
         # Get the values
         disciplina = self.cleaned_data['disciplina']
         solicitante = self.instance.solicitante
 
-        # Todos os pedidos
+        # Todos os pedidos no calendario
         user_pedidos = Solicitacao.objects.filter(solicitante=solicitante)
+        user_pedidos_sem = user_pedidos.filter(semestre_solicitacao=self.instance.semestre_solicitacao).count()
 
-        # Limita a três pedidos nos últimos 30 dias
-        n_pedidos_em_30_dias = user_pedidos.filter(
-            data_solicitacao__gte=date.today() - timedelta(days=30)).count()
-        if n_pedidos_em_30_dias >= 3:
+        # Limita a três pedidos nos calendario
+        if user_pedidos_sem >= 3:
             raise forms.ValidationError(
                 'Somente três pedidos por semestre', code='quantidade')
 
-        # Find the duplicates
+        # Encontra pedidos repetidos e impede a solicitação
         duplicates = user_pedidos.filter(disciplina=disciplina)
         if self.instance.pk:
             # if the instance is already in the database,  exclude self from list of duplicates
