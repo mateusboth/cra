@@ -8,7 +8,8 @@ from curso.models import Curso
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 User = get_user_model()
 
@@ -37,7 +38,7 @@ User = get_user_model()
 #             user.curso = form.cleaned_data.get('curso')
 #             password = form.cleaned_data.get('password1')
 #             user.nome_completo = form.cleaned_data.get('nome_completo')
-#             user.email = form.cleaned_data.get('email') 
+#             user.email = form.cleaned_data.get('email')
 #             user = authenticate(username=matricula, password=password)
 #             login(request, user)
 #             return redirect('home')
@@ -45,24 +46,35 @@ User = get_user_model()
 #         form = SignUpForm()
 #     return render(request, 'registration/signup.html', {'form': form})
 
+
 class UserCreateView(CreateView):
     template_name = 'create_form_generic.html'
     form_class = SignUpForm
-    
+    success_url = reverse_lazy('cc:solicitacoes')
+
     def get_context_data(self, **kwargs):
         """Adiciona form_title para ser usado nos templates"""
         context = super(UserCreateView, self).get_context_data(**kwargs)
         context["form_title"] = 'Registre-se'
         return context
 
+    def get_form_kwargs(self):
+        """Passa request para logar automaticamente o usuario ao cadastrar-se"""
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['request'] = self.request
+        return form_kwargs
+
+
 class UsersListView(PermissionRequiredMixin, generic.ListView):
     model = User
     permission_required = 'user.staff'
+
 
 class UserDetailView(PermissionRequiredMixin, generic.DetailView):
     model = User
     context_object_name = 'usuario'
     permission_required = 'user.staff'
+
 
 class UserUpdateView(PermissionRequiredMixin, UpdateView):
     model = User
