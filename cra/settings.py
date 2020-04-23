@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'coverage',
     'django_select2',
+    'extra_views',
 
     'calendario',
     'curso',

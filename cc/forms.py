@@ -1,4 +1,7 @@
 """SolicitacaoForm usado para criar solicitacoes de CC."""
+from crispy_forms.layout import HTML, Fieldset
+from crispy_forms.helper import FormHelper, Layout
+from django.forms import modelformset_factory
 from datetime import date, timedelta
 from django import forms
 from .models import Solicitacao, Disciplina, Resultado, Recurso
@@ -12,7 +15,7 @@ class SolicitacaoForm(forms.ModelForm):
     class Meta():
         model = Solicitacao
         fields = ['disciplina', 'justificativa', 'documentos']
-        widgets = {
+        widgets = {  # TODO mudar DB para postersql e adiciona unaccent em search fields
             'disciplina': s2forms.ModelSelect2Widget(model=Disciplina,
                                                      search_fields=['nome__icontains', 'codigo__icontains']),
         }
@@ -38,7 +41,8 @@ class SolicitacaoForm(forms.ModelForm):
 
         # Todos os pedidos no calendario
         user_pedidos = Solicitacao.objects.filter(solicitante=solicitante)
-        user_pedidos_sem = user_pedidos.filter(semestre_solicitacao=self.instance.semestre_solicitacao).count()
+        user_pedidos_sem = user_pedidos.filter(
+            semestre_solicitacao=self.instance.semestre_solicitacao).count()
 
         # Limita a três pedidos nos calendario
         if user_pedidos_sem >= 3:
@@ -53,6 +57,26 @@ class SolicitacaoForm(forms.ModelForm):
         if duplicates.exists():
             raise forms.ValidationError(
                 'Não é permitido solicitar duas vezes a mesma disciplina!', code='repetido')
+
+
+def form_homologacao_valid(form):
+    """Ajusta o reusltaod de homologada conforme valor de cursou_anteriormente e cria resultado"""
+    if form.instance.cursou_anteriormente is True:
+        form.instance.homologada = 'NAO'
+    elif form.instance.cursou_anteriormente is False:
+        form.instance.homologada = 'SIM'
+    else:
+        form.instance.homologada = 'PEN'
+    # Verifica se ja existe um resultado associado
+    r = Resultado.objects.filter(solicitacao=form.instance.pk)
+    if form.instance.homologada != 'SIM':
+        # deleta resultado se existir
+        r.delete()
+    if form.instance.homologada == 'SIM':
+        s = Solicitacao.objects.get(pk=form.instance.pk)
+        if not r:  # Se não existir um resultado cria um
+            r = Resultado(solicitacao=s)
+            r.save()
 
 
 class ResultadoForm(forms.ModelForm):
@@ -86,3 +110,4 @@ class RecursoForm(forms.ModelForm):
         solicitante = kwargs.pop('request')
         super(RecursoForm, self).__init__(*args, **kwargs)
         self.instance.solicitante = solicitante
+

@@ -12,13 +12,16 @@ urlpatterns = [
     path('', views.SolicitacoesGenericList.as_view(), name='solicitacoes'),
     path('<int:pk>', views.SolicitacaoDetailView.as_view(),
          name='solicitacao-detail'),
-    #homologação
+    # homologação
     path('<int:pk>/homologacao/',
          views.HomologacaoCreate.as_view(), name='homologacao-create'),
-    #resultado
+    path('homologacoes/<slug:slug>',
+         views.HomologacaoFormSetView.as_view(), name="manage_homologacoes"),
+    # resultado
     path('<int:pk_sol>/resultado/<int:pk>',
          views.ResultadoUpdate.as_view(), name='resultado-update'),
-    #recurso
+    # recurso
     path('<int:pk_sol>/resultado/<int:pk>/recurso/create',
          views.RecursoCreate.as_view(), name='recurso-create'),
+
 ]

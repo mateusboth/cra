@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<form action="" method="post">
+{% csrf_token %}
+{{ formset.management_form }}
+<table class='table table-striped table-hover table-responsive'>
+    <thead>
+      <tr>
+        <th>Curso</th>
+        <th>Solicitante</th>      
+        <th>Cursou Anteriormente</th>       
+      </tr>
+    </thead>
+    <tbody>
+    {% for form in formset %}
+    <tr>
+          {{ form.id }}
+          <td> {{ form.instance.solicitante.curso }} </td>
+          <td> {{ form.instance.solicitante }}</td>                  
+          <td> {{ form.cursou_anteriormente }}</td>
+          <td> </td>
+        </tr>
+    {% endfor %}
+        
+    </tbody>
+  </table> 
+
+<button type="submit">Submit</button>
+</form>
+
+
+
+{% endblock content %}

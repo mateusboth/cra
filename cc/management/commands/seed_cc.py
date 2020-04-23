@@ -46,11 +46,11 @@ def create_solicitacao():
     calendarios = Calendario.objects.all()
     disciplinas_all = list(Disciplina.objects.all())
     cursos = Curso.objects.all()
-
     for i in range(1, 11):
         # cria usuario
+        ano = random.randint(2010, 2025)
         curso = random.choice(cursos)
-        user = User(curso=curso, matricula=f'203930{i}', 
+        user = User(curso=curso, matricula=f'{ano}03930{i}', 
                     nome_completo=f'João {i} da silva',
                     email='seed@seed.com')
         user.save()

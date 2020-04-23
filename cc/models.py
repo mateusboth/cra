@@ -16,6 +16,13 @@ User = get_user_model()
 
 class Solicitacao(models.Model):
     """Solicitações, depende de User e curso"""
+    HOMOLOGACAO = (
+        ('PEN', 'Pendente'),
+        ('SIM', 'Homologado'),
+        ('NAO', 'Não Homologado'),
+    )
+
+    #TODO trocar homologada de boolean para choice homologada e não homologada, e ajustar forms
     solicitante = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
@@ -28,11 +35,15 @@ class Solicitacao(models.Model):
         ("Data da solicitação"), auto_now_add=True)
     cursou_anteriormente = models.BooleanField(
         ("Cursou anteriormente a disciplina solicitada"), blank=True, null=True)
-    homologada = models.BooleanField(blank=True, null=True)
-    # semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE)
+    homologada = models.CharField(
+        max_length=3,
+        choices=HOMOLOGACAO,
+        default='PEN'
+    )
+    semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE, null=True)
 
     class Meta:
-        ordering = ['-data_solicitacao', 'solicitante']
+        ordering = ['semestre_solicitacao', 'solicitante', 'disciplina']
         constraints = [
             models.UniqueConstraint(
                 fields=['solicitante', 'disciplina'], name='unique_solicitação')
@@ -45,8 +56,6 @@ class Solicitacao(models.Model):
         """Busca url de uma solicitação especifica"""
         return reverse("cc:solicitacao-detail", kwargs={"pk": self.pk})
     
-
-
 def validate_nota(nota):
     if 0 > nota or 10 < nota:
         raise ValidationError(

@@ -35,6 +35,7 @@
           <td>{{ solicitacao.solicitante }}</td>
           <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
           <td><a href="{{solicitacao.get_absolute_url}}/homologacao" >{{ solicitacao.homologada }}</a></td>
+
           <td><a href="{{solicitacao.resultado.get_update_url}}">{{ solicitacao.resultado }}</a></td>
           <td>{{ solicitacao.semestre_solicitacao }}</td>
         </tr>
