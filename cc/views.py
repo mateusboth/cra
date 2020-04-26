@@ -38,8 +38,10 @@ class SolicitacoesGenericList(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # qs = qs.filter(disciplina__nome__startswith='tererm')
+        slug = self.kwargs.get('slug')
         if self.request.user.has_perm('can_add_resultado'):
+            if slug:  # Filtra pelo semestre/slug
+                return qs.filter(semestre_solicitacao__slug=slug)
             return qs
         qs = qs.filter(solicitante=self.request.user)
         return qs
@@ -72,6 +74,7 @@ class HomologacaoCreate(PermissionRequiredMixin, UpdateView):
         redirect_url = super(HomologacaoCreate, self).form_valid(form)
         return redirect_url
 
+
 class HomologacaoFormSetView(ModelFormSetView):
     model = Solicitacao
     fields = ['cursou_anteriormente']
@@ -82,7 +85,7 @@ class HomologacaoFormSetView(ModelFormSetView):
 
     def get_queryset(self):
         slug = self.kwargs['slug']
-        return super(HomologacaoFormSetView, self).get_queryset().filter(semestre_solicitacao__slug=slug)    
+        return super(HomologacaoFormSetView, self).get_queryset().filter(semestre_solicitacao__slug=slug)
 
     def formset_valid(self, formset):
         """Ajusta o reusltaod de homologada conforme valor de cursou_anteriormente e cria resultado"""
@@ -91,6 +94,32 @@ class HomologacaoFormSetView(ModelFormSetView):
         redirect_url = super(HomologacaoFormSetView,
                              self).formset_valid(formset)
         return redirect_url
+
+
+class AusenteFormSetView(ModelFormSetView):
+    "Defini alunos ausentes em bloco, com base no semestre"
+    model = Resultado
+    fields = ['ausente']
+    template_name = 'cc/manage_ausentes.html'
+    success_url = reverse_lazy('cc:solicitacoes')
+    factory_kwargs = {'extra': 0}
+
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return super(AusenteFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
+
+class AvaliadorFormSetView(PermissionRequiredMixin, ModelFormSetView):
+    "Defini avaliadores em bloco, com base no semestre"
+    model = Resultado
+    fields = ['avaliador']
+    template_name = 'cc/manage_avaliadores.html'
+    success_url = reverse_lazy('cc:solicitacoes')
+    factory_kwargs = {'extra': 0}
+    permission_required = 'user.can_add_avaliador'
+
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return super(AvaliadorFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
 
 class ResultadoUpdate(UpdateView):
     model = Resultado
@@ -114,4 +143,3 @@ class RecursoCreate(CreateView):
         kwargs = super(RecursoCreate, self).get_form_kwargs()
         kwargs.update({'request': self.request.user})
         return kwargs
-

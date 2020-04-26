@@ -11,17 +11,17 @@
         <th>Curso</th>
         <th>Solicitante</th>      
         <th>Disciplina</th>      
-        <th> {{ formset.form.cursou_anteriormente.label }}</th>       
+        <th> {{ formset.form.ausente.label }}</th>       
       </tr>
     </thead>
     <tbody>
     {% for form in formset %}   
     <tr>
           {{ form.id }}
-          <td> {{ form.instance.solicitante.curso }} </td>
-          <td> {{ form.instance.solicitante }}</td>                  
-          <td> {{ form.instance.disciplina }}</td>                  
-          <td> {{ form.cursou_anteriormente }}</td>
+          <td> {{ form.instance.solicitacao.solicitante.curso }} </td>
+          <td> {{ form.instance.solicitacao.solicitante }}</td>                  
+          <td> {{ form.instance.solicitacao.disciplina }}</td>                  
+          <td> {{ form.ausente }}</td>
           <td> </td>
         </tr>
     {% endfor %}
