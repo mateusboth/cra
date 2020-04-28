@@ -4,7 +4,7 @@ from django.forms import modelformset_factory
 from .forms import form_homologacao_valid
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from .forms import SolicitacaoForm, ResultadoForm, RecursoForm
+from .forms import SolicitacaoForm, ResultadoForm, RecursoForm, AvaliadorForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
@@ -111,15 +111,21 @@ class AusenteFormSetView(ModelFormSetView):
 class AvaliadorFormSetView(PermissionRequiredMixin, ModelFormSetView):
     "Defini avaliadores em bloco, com base no semestre"
     model = Resultado
-    fields = ['avaliador']
     template_name = 'cc/manage_avaliadores.html'
     success_url = reverse_lazy('cc:solicitacoes')
     factory_kwargs = {'extra': 0}
     permission_required = 'user.can_add_avaliador'
+    form_class = AvaliadorForm
 
     def get_queryset(self):
         slug = self.kwargs['slug']
         return super(AvaliadorFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
+
+
+class AvaliadorUpdate(UpdateView):
+    model = Resultado
+    template_name = 'create_form_generic.html'
+    form_class = AvaliadorForm
 
 class ResultadoUpdate(UpdateView):
     model = Resultado

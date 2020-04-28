@@ -1,4 +1,5 @@
 """SolicitacaoForm usado para criar solicitacoes de CC."""
+from django_select2 import forms as s2forms
 from crispy_forms.layout import HTML, Fieldset
 from crispy_forms.helper import FormHelper, Layout
 from django.forms import modelformset_factory
@@ -6,8 +7,8 @@ from datetime import date, timedelta
 from django import forms
 from .models import Solicitacao, Disciplina, Resultado, Recurso
 from calendario.models import Calendario
-
-from django_select2 import forms as s2forms
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class SolicitacaoForm(forms.ModelForm):
@@ -17,7 +18,10 @@ class SolicitacaoForm(forms.ModelForm):
         fields = ['disciplina', 'justificativa', 'documentos']
         widgets = {  # TODO mudar DB para postersql e adiciona unaccent em search fields
             'disciplina': s2forms.ModelSelect2Widget(model=Disciplina,
-                                                     search_fields=['nome__icontains', 'codigo__icontains']),
+                                                     search_fields=[
+                                                         'nome__icontains', 'codigo__icontains'],
+                                                     attrs={'data-minimum-input-length': 0,}),
+
         }
 
     def __init__(self, *args, **kwargs):
@@ -30,7 +34,7 @@ class SolicitacaoForm(forms.ModelForm):
         if not user.is_staff:  # filtra as disciplinas com base no curso do user
             self.fields['disciplina'].queryset = Disciplina.objects.filter(
                 curso=user.curso)
-        self.fields['disciplina'].help_text = "Digite CAX para exibir todas as disciplinas. Disciplinas com acento deve ser maisuculas, ex: TÉCN"
+        self.fields['disciplina'].help_text = "Disciplinas com acento deve ser maisuculas, ex: TÉCN"
 
     def clean(self, *args, **kwargs):
         """Impede pedidos repetidos, e mais de 3 pedidos em calendario vigente"""
@@ -79,6 +83,31 @@ def form_homologacao_valid(form):
             r.save()
 
 
+class AvaliadorForm(forms.ModelForm):
+    """Defini avaliador"""
+    class Meta():
+        model = Resultado
+        fields = ['avaliador']
+        # TODO Não esta funcionando
+        widgets = {  # TODO mudar DB para postersql e adiciona unaccent em search fields
+            'avaliador': s2forms.ModelSelect2Widget(
+                model=User,
+                search_fields=[
+                    'nome_completo__icontains',
+                    'matricula__icontains'],
+                attrs={'data-minimum-input-length': 0,
+                'style': 'width: 100%;, min-width:80px'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        """Definie user como o user passado em get_kwargs"""
+        super(AvaliadorForm, self).__init__(*args, **kwargs)
+        # filtra os avaliadores com base no is_avaliador
+        self.fields['avaliador'].queryset = User.objects.filter(
+            is_avaliador=True)
+        # self.fields['avaliador'].help_text = "Nome com acento deve ser maisuculas, ex: JOÃO"
+
+
 class ResultadoForm(forms.ModelForm):
     """Recebe a nota, e com base nela e na nota informa resultado"""
     class Meta():
@@ -110,4 +139,3 @@ class RecursoForm(forms.ModelForm):
         solicitante = kwargs.pop('request')
         super(RecursoForm, self).__init__(*args, **kwargs)
         self.instance.solicitante = solicitante
-

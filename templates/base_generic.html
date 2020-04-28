@@ -17,6 +17,7 @@
   <!-- favicon -->
   <link rel='shortcut icon' type='image/x-icon'
     href='https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme/favicons/favicon-16x16.png' />
+{{ form.media.css }}
 
 </head>
 
@@ -139,5 +140,6 @@
 {% load static %}
 <script src={% static 'js/scripts.js' %}></script>
 {{ form.media.js }}
+{{ formset.media.js }}
 
 </html>
