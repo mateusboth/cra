@@ -3,8 +3,12 @@
 {% block content %}
 <h1>Solicitações</h1>
 
-
-<p><a href="{% url 'cc:solicitacao-create' %}">Nova solicitação</a></p>
+<p><a href="{% url 'cc:solicitacao-create' %}">Nova solicitação</a>
+{% if view.kwargs.slug %}
+<a href="{% url 'cc:manage_homologacoes' slug=view.kwargs.slug %}">Homologar solicitações</a>
+<a href="{% url 'cc:manage_ausentes' slug=view.kwargs.slug %}">Ausentes</a>
+<a href="{% url 'cc:manage_avaliadores' slug=view.kwargs.slug %}">Atribuir avaliadores</a></p>
+{% endif %}
 
 {% if solicitacao_list %}
   <table class='table table-striped table-hover table-responsive'>

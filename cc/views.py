@@ -2,13 +2,14 @@
 from extra_views import ModelFormSetView
 from django.forms import modelformset_factory
 from .forms import form_homologacao_valid
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from .forms import SolicitacaoForm, ResultadoForm, RecursoForm, AvaliadorForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from calendario.models import Calendario
 from .models import Solicitacao, Resultado
 
 
@@ -29,7 +30,6 @@ class SolicitacaoCreate(LoginRequiredMixin, CreateView):
 class SolicitacoesGenericList(LoginRequiredMixin, generic.ListView):
     model = Solicitacao
     paginate_by = 20
-    # TODO filtrar aqui lista de disciplinas com base no usuario
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,10 +38,11 @@ class SolicitacoesGenericList(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        slug = self.kwargs.get('slug')
         if self.request.user.has_perm('can_add_resultado'):
-            if slug:  # Filtra pelo semestre/slug
-                return qs.filter(semestre_solicitacao__slug=slug)
+            if self.kwargs.get('slug'):  # Filtra pelo semestre/slug
+                cal = get_object_or_404(
+                    Calendario, slug=self.kwargs.get('slug'))
+                qs = qs.filter(semestre_solicitacao=cal)
             return qs
         qs = qs.filter(solicitante=self.request.user)
         return qs
@@ -108,6 +109,7 @@ class AusenteFormSetView(ModelFormSetView):
         slug = self.kwargs['slug']
         return super(AusenteFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
 
+
 class AvaliadorFormSetView(PermissionRequiredMixin, ModelFormSetView):
     "Defini avaliadores em bloco, com base no semestre"
     model = Resultado
@@ -126,6 +128,7 @@ class AvaliadorUpdate(UpdateView):
     model = Resultado
     template_name = 'create_form_generic.html'
     form_class = AvaliadorForm
+
 
 class ResultadoUpdate(UpdateView):
     model = Resultado

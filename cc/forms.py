@@ -88,7 +88,6 @@ class AvaliadorForm(forms.ModelForm):
     class Meta():
         model = Resultado
         fields = ['avaliador']
-        # TODO Não esta funcionando
         widgets = {  # TODO mudar DB para postersql e adiciona unaccent em search fields
             'avaliador': s2forms.ModelSelect2Widget(
                 model=User,
