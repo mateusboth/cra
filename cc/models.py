@@ -110,6 +110,12 @@ class Resultado(models.Model):
             else:
                 self.resultado = 'REP'
         super(Resultado, self).save(*args, **kwargs)
+    
+    def clean(self, *args, **kwargs):
+        if self.ausente and self.nota is not None:
+            raise ValidationError(
+                'Aluno não pode estar ausente e ter nota. Contate o setor responavel se o aluno tive comparecido')
+        super(Resultado, self).clean(*args, **kwargs)
 
 
 class Recurso(models.Model):

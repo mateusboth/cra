@@ -111,22 +111,15 @@ class ResultadoForm(forms.ModelForm):
     """Recebe a nota, e com base nela e na nota informa resultado"""
     class Meta():
         model = Resultado
-        fields = ['solicitacao', 'nota', 'ausente']
+        fields = ['solicitacao', 'nota']
 
     def __init__(self, *args, **kwargs):
         """Definie avaliador e solicitacao passado em get_kwargs"""
-        avaliador = kwargs.pop('request')
+        avaliador = kwargs.pop('user', None)
         super(ResultadoForm, self).__init__(*args, **kwargs)
-        self.instance.avaliador = avaliador
+        if avaliador is not None and not avaliador.is_staff:
+            self.instance.avaliador = avaliador
         self.fields['solicitacao'].disabled = True
-
-    def clean(self, *args, **kwargs):  # TODO transferir para o save ?
-        """Defini avaliador como usuario e o resultado conforme a nota"""
-        super().clean(*args, **kwargs)
-        if self.cleaned_data['ausente'] and self.cleaned_data['nota'] is not None:
-            raise forms.ValidationError(
-                'Aluno não pode estar ausente e ter nota')
-
 
 class RecursoForm(forms.ModelForm):
     class Meta():

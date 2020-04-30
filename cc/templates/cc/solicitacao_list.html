@@ -7,7 +7,8 @@
 {% if view.kwargs.slug %}
 <a href="{% url 'cc:manage_homologacoes' slug=view.kwargs.slug %}">Homologar solicitações</a>
 <a href="{% url 'cc:manage_ausentes' slug=view.kwargs.slug %}">Ausentes</a>
-<a href="{% url 'cc:manage_avaliadores' slug=view.kwargs.slug %}">Atribuir avaliadores</a></p>
+<a href="{% url 'cc:manage_avaliadores' slug=view.kwargs.slug %}">Atribuir avaliadores</a>
+<a href="{% url 'cc:manage_resultados' slug=view.kwargs.slug %}">Resultados</a></p>
 {% endif %}
 
 {% if solicitacao_list %}

@@ -12,7 +12,7 @@ urlpatterns = [
     path('', views.SolicitacoesGenericList.as_view(), name='solicitacoes'),
     path('<slug:slug>', views.SolicitacoesGenericList.as_view(), name='solicitacoes'),
     # TODO arruma bagunça entre slug e pk pra ver do ano e detalhes
-    path('<int:pk>', views.SolicitacaoDetailView.as_view(),
+    path('detail/<int:pk>', views.SolicitacaoDetailView.as_view(),
          name='solicitacao-detail'),
     # homologação
     path('<int:pk>/homologacao/',
@@ -25,11 +25,11 @@ urlpatterns = [
     # Defini avaliadores
     path('<slug:slug>/avaliadores',
          views.AvaliadorFormSetView.as_view(), name="manage_avaliadores"),
-    path('<int:pk_sol>/avaliador/<int:pk>',
-         views.AvaliadorUpdate.as_view(), name='avaliador-update'),
     # resultado
     path('<int:pk_sol>/resultado/<int:pk>',
          views.ResultadoUpdate.as_view(), name='resultado-update'),
+    path('<slug:slug>/resultados/',
+         views.ResultadoFormSetView.as_view(), name='manage_resultados'),
     # recurso
     path('<int:pk_sol>/resultado/<int:pk>/recurso/create',
          views.RecursoCreate.as_view(), name='recurso-create'),
