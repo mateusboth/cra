@@ -72,6 +72,11 @@ class Resultado(models.Model):
         ('PEN', 'Pendente')
     )
 
+    RESULTADO_RECURSO = (
+        ('DEF', 'Deferido'),
+        ('IND', 'Indeferido')
+    )
+
     solicitacao = models.OneToOneField(
         "Solicitacao", on_delete=models.CASCADE)
     nota = models.DecimalField(decimal_places=1, max_digits=3,
@@ -87,6 +92,16 @@ class Resultado(models.Model):
     )
     data_resultado = models.DateTimeField(
         ("Data do resultado"), auto_now_add=True)
+    # Recursos
+    solicitar_recurso = models.BooleanField(default=False)
+    nota_anterior = models.DecimalField(decimal_places=1, max_digits=3,
+                                        validators=[validate_nota],
+                                        blank=True, null=True)
+    resultado_recurso = models.CharField(
+        max_length=3,
+        choices=RESULTADO_RECURSO,
+        blank=True,
+    )
 
     def __str__(self):
         return self.resultado
@@ -116,15 +131,3 @@ class Resultado(models.Model):
             raise ValidationError(
                 'Aluno não pode estar ausente e ter nota. Contate o setor responavel se o aluno tive comparecido')
         super(Resultado, self).clean(*args, **kwargs)
-
-
-class Recurso(models.Model):
-    resultado = models.OneToOneField("Resultado", on_delete=models.CASCADE)
-    justificativa = models.TextField((""))
-    documentos = models.FileField(("Documentos comprobatorios da justificativa"),
-                                  upload_to=None, max_length=100, blank=True, null=True)
-    data_solicitacao_recurso = models.DateTimeField(
-        ("Data da solicitação do recurso"), auto_now_add=True)
-
-
-# PENDENTE RECURSOS

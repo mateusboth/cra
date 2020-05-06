@@ -2,19 +2,18 @@
 
 {% block content %}
     <h1>Disciplinas</h1>
-<p><a href="{% url 'cc:disciplina-create' %}">Nova disciplina</a></p>
 
-    {% if disciplina_list %}    
+    {% if disciplina_list %} 
 
       {% for disciplina in disciplina_list %}
       <li>
-        <a href="{{ disciplina.get_absolute_url }}">{{ disciplina.codigo }}</a> ({{disciplina.nome}} {{disciplina.curso}}) - <a href="{{ disciplina.get_absolute_url }}/update">Editar</a>
+        <a href="{% url 'cc:manage_resultados_disciplina' slug=view.kwargs.slug codigo=disciplina.codigo %}"> {{ disciplina }} </a> - Solicitações: {{ disciplina.num_sol }}
       </li>
       {% endfor %}
 
     </ul>
 
     {% else %}
-      <p>There are no cursos cadastrados.</p>
+      <p>Não solicitações homologadas neste semestre</p>
     {% endif %}       
 {% endblock %}

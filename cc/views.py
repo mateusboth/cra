@@ -7,8 +7,9 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from calendario.models import Calendario
+from curso.models import Disciplina
 from .models import Solicitacao, Resultado
-from .forms import SolicitacaoForm, ResultadoForm, RecursoForm, AvaliadorForm, form_homologacao_valid
+from .forms import SolicitacaoForm, ResultadoForm, AvaliadorForm, form_homologacao_valid
 
 
 class SolicitacaoCreate(LoginRequiredMixin, CreateView):
@@ -66,8 +67,11 @@ class HomologacaoCreate(PermissionRequiredMixin, UpdateView):
     fields = ['solicitante', 'disciplina', 'cursou_anteriormente']
     permission_required = 'user.staff'
     template_name = 'create_form_generic.html'
-    success_url = reverse_lazy('cc:solicitacoes') #TODO adiciona slug se houver
+    success_url = reverse_lazy('cc:solicitacoes')
 
+    def get_success_url(self):
+        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
+        
     def form_valid(self, form):
         form_homologacao_valid(form)
         redirect_url = super(HomologacaoCreate, self).form_valid(form)
@@ -81,6 +85,9 @@ class HomologacaoFormSetView(ModelFormSetView):
     success_url = reverse_lazy('cc:solicitacoes')
     factory_kwargs = {'extra': 0}
     # form_class = HomologaçãoForm para adicionar crispy TODO
+
+    def get_success_url(self):
+        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
 
     def get_queryset(self):
         slug = self.kwargs['slug']
@@ -103,6 +110,9 @@ class AusenteFormSetView(ModelFormSetView):
     success_url = reverse_lazy('cc:solicitacoes')
     factory_kwargs = {'extra': 0}
 
+    def get_success_url(self):
+        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
+
     def get_queryset(self):
         slug = self.kwargs['slug']
         return super(AusenteFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
@@ -116,6 +126,9 @@ class AvaliadorFormSetView(PermissionRequiredMixin, ModelFormSetView):
     factory_kwargs = {'extra': 0}
     permission_required = 'user.can_add_avaliador'
     form_class = AvaliadorForm
+
+    def get_success_url(self):
+        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
 
     def get_queryset(self):
         slug = self.kwargs['slug']
@@ -145,7 +158,43 @@ class ResultadoFormSetView(PermissionRequiredMixin, ModelFormSetView):
             if not self.request.user.is_staff:
                 form.instance.avaliador = self.request.user
         return super(ResultadoFormSetView, self).formset_valid(formset)
-    
+
+    def get_success_url(self):
+        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
+
+from django.db.models import Count
+class SolicitacoesDisciplinaGenericList(LoginRequiredMixin, generic.ListView):
+    model = Disciplina
+    template_name = 'cc/disciplina_list.html'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        cal = get_object_or_404(
+            Calendario, slug=self.kwargs.get('slug'))
+        qs = qs.filter(solicitacao__semestre_solicitacao=cal,
+                       solicitacao__homologada='SIM').distinct().annotate(num_sol=Count('solicitacao'))
+        return qs
+
+class ResultadoDisciplinaFormSetView(PermissionRequiredMixin, ModelFormSetView):
+    "Defini Resultados em bloco, com base no semestre e disciplina"
+    model = Resultado
+    template_name = 'cc/manage_resultados_disciplinas.html'
+    success_url = reverse_lazy('cc:solicitacoes')
+    factory_kwargs = {'extra': 0}
+    permission_required = 'user.can_add_resultado'
+    form_class = ResultadoForm
+
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        codigo = self.kwargs['codigo']
+        return super(ResultadoDisciplinaFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug, solicitacao__disciplina__codigo=codigo)
+
+    def formset_valid(self, formset):
+        for form in formset:
+            if not self.request.user.is_staff:
+                form.instance.avaliador = self.request.user
+        return super(ResultadoDisciplinaFormSetView, self).formset_valid(formset)
+
     def get_success_url(self):
         return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
 
@@ -162,13 +211,37 @@ class ResultadoUpdate(UpdateView):
         return kwargs
 
 
-class RecursoCreate(CreateView):
-    model = Solicitacao
+class RecursoCreate(UpdateView):
+    model = Resultado
     template_name = 'create_form_generic.html'
-    form_class = RecursoForm
+    fields = ['solicitar_recurso']
 
-    def get_form_kwargs(self):
-        """inclui user aos kwargs passado ao init do form"""
-        kwargs = super(RecursoCreate, self).get_form_kwargs()
-        kwargs.update({'request': self.request.user})
-        return kwargs
+    def form_valid(self, form):
+        """Salva nota em nota_anterior e altera para null"""
+        if form.instance.solicitar_recurso:
+            form.instance.nota_anterior = form.instance.nota
+            form.instance.nota = None
+        return super().form_valid(form)
+
+
+class RecursoFormSetView(PermissionRequiredMixin, ModelFormSetView):
+    model = Resultado
+    template_name = 'cc/manage_recursos.html'
+    success_url = reverse_lazy('cc:solicitacoes')
+    factory_kwargs = {'extra': 0}
+    permission_required = 'user.is_staff'
+    fields = ['resultado_recurso', 'nota']
+
+    def get_success_url(self):
+        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
+
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return super(RecursoFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug, solicitar_recurso=True)
+
+    def formset_valid(self, formset):
+        for form in formset:
+            if form.instance.resultado_recurso == 'IND':
+                form.instance.nota = form.instance.nota_anterior
+                form.instance.nota_anterior = None
+        return super().formset_valid(formset)

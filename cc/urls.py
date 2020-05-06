@@ -30,8 +30,14 @@ urlpatterns = [
          views.ResultadoUpdate.as_view(), name='resultado-update'),
     path('<slug:slug>/resultados/',
          views.ResultadoFormSetView.as_view(), name='manage_resultados'),
+     # por disciplina
+     path('<slug:slug>/disciplinas/',
+          views.SolicitacoesDisciplinaGenericList.as_view(), name='disciplinas_solicitadas'),
+    path('<slug:slug>/resultados/<slug:codigo>',
+         views.ResultadoDisciplinaFormSetView.as_view(), name='manage_resultados_disciplina'),
     # recurso
-    path('<int:pk_sol>/resultado/<int:pk>/recurso/create',
+    path('recurso/<int:pk>/',
          views.RecursoCreate.as_view(), name='recurso-create'),
-
+    path('<slug:slug>/recursos/',
+         views.RecursoFormSetView.as_view(), name='manage_recursos'),
 ]

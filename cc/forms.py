@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper, Layout
 from django.forms import modelformset_factory
 from datetime import date, timedelta
 from django import forms
-from .models import Solicitacao, Disciplina, Resultado, Recurso
+from .models import Solicitacao, Disciplina, Resultado
 from calendario.models import Calendario
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -120,14 +120,3 @@ class ResultadoForm(forms.ModelForm):
         if avaliador is not None and not avaliador.is_staff:
             self.instance.avaliador = avaliador
         self.fields['solicitacao'].disabled = True
-
-class RecursoForm(forms.ModelForm):
-    class Meta():
-        model = Recurso
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        """Definie avaliador e solicitacao passado em get_kwargs"""
-        solicitante = kwargs.pop('request')
-        super(RecursoForm, self).__init__(*args, **kwargs)
-        self.instance.solicitante = solicitante
