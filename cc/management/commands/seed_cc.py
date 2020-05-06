@@ -3,7 +3,7 @@ from datetime import date
 import logging
 from django.core.management.base import BaseCommand
 import random
-from cc.models import Solicitacao
+from cc.models import Solicitacao, Resultado
 from curso.models import Disciplina, Curso
 from calendario.models import Calendario
 from django.contrib.auth import get_user_model
@@ -52,20 +52,26 @@ def create_solicitacao():
         curso = random.choice(cursos)
         user = User(curso=curso, matricula=f'{ano}03930{i}', 
                     nome_completo=f'João {i} da silva',
-                    email='seed@seed.com')
+                    email='seed@seed.com',
+                    date_joined=date.today())
         user.save()
         logger.info("%(user)s user created.")
         # seleciona disciplinas e faz solicitação
         disci = random.sample(disciplinas_all, i)
         for d in disci:
             cal = random.choice(calendarios)
-            print(f'linha 53: {user}, {d}, {cal}')
             solicitacao = Solicitacao(
                                 solicitante=user, 
                                 semestre_solicitacao=cal,
-                                disciplina=d)
+                                disciplina=d,
+                                cursou_anteriormente=False,
+                                homologada='SIM')
             solicitacao.save()
             logger.info("%(solicitacao)s solicitacao created.")
+            if solicitacao.homologada == 'SIM':
+                nota = random.randint(0,10)
+                resultado = Resultado(solicitacao=solicitacao, nota=nota)
+                resultado.save()
 # return solicitacao
 
 

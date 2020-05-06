@@ -22,7 +22,6 @@ class Solicitacao(models.Model):
         ('NAO', 'Não Homologado'),
     )
 
-    #TODO trocar homologada de boolean para choice homologada e não homologada, e ajustar forms
     solicitante = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
@@ -90,6 +89,7 @@ class Resultado(models.Model):
         blank=True,
         default='PEN'
     )
+    # TODO arrumar data_resultado
     data_resultado = models.DateTimeField(
         ("Data do resultado"), auto_now_add=True)
     # Recursos
@@ -129,5 +129,5 @@ class Resultado(models.Model):
     def clean(self, *args, **kwargs):
         if self.ausente and self.nota is not None:
             raise ValidationError(
-                'Aluno não pode estar ausente e ter nota. Contate o setor responavel se o aluno tive comparecido')
+                'Aluno não pode estar ausente e ter nota. Contate o setor responavel se o aluno tiver comparecido')
         super(Resultado, self).clean(*args, **kwargs)
