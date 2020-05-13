@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+  {% block title %}<title>Certificações de Conhecimento</title>{% endblock %}
+  <!-- Add additional CSS in static file -->
+  {% load static %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/pdf.css' %}">
+  <style>
+  @page {
+  size: landscape; 
+    }
+  .break-page {
+    page-break-after: always;
+  }
+  </style>
+</head>
+
+<body>
+
+<header>
+<p> 
+Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Sul <br>
+Campus Caxias do Sul<br>
+Coordenadoria de Registros Acadêmicos</p>
+</header>
+
+{% for solicitacao in solicitacao_list %}
+
+ 
+{% ifchanged solicitacao.solicitante %}
+<main>
+{% if forloop.counter != 1 %}
+</tbody>
+</table>
+<br>
+<p class='break-page'>  </p>
+</main>
+
+{% endif %}
+<div class='main-text'>
+<strong>Aproveitamentos de Estudos e Certificações de Conhecimentos</strong>
+
+<p>Solicitante: {{ solicitacao.solicitante }} </p>
+<p>Curso: {{ solicitacao.solicitante.curso.nome }} </p>
+</div>
+<table class='table table-striped'>
+  <thead>
+    <tr>      
+      <th>Disciplina Anterior</th>
+      <th>CH</th>
+      <th>Onde Cursou?</th>
+      <th>Disciplina solicitada</th>
+      <th>Data do Resultado</th>
+      <th>Resultado</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% endifchanged %}    
+    <tr>
+      <td> - </td>
+      <td> - </td>
+      <td> - </td>
+      <td>{{ solicitacao.disciplina }}</td>
+      <td>CC em {{ solicitacao.resultado.data_resultado }}</td>
+      <td>{{ solicitacao.resultado.get_resultado_display }}</td>
+    </tr>  
+
+   {% endfor %}
+</tbody>
+</table>
+<br> 
+  
+</body>
+
+</html>

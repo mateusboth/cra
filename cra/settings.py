@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'curso',
     'user',
     'cc',
+    'relatorio',
 ]
 
 AUTH_USER_MODEL = 'user.User'

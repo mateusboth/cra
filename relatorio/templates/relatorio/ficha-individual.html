@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+  {% block title %}<title>Certificações de Conhecimento</title>{% endblock %}
+  <!-- Add additional CSS in static file -->
+  {% load static %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/pdf.css' %}">
+  <style>
+  @page {
+  size: landscape; 
+    }
+  .break-page {
+    page-break-after: always;
+  }
+  </style>
+</head>
+
+<body>
+
+<header>
+<p> 
+Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Sul <br>
+Campus Caxias do Sul<br>
+Coordenadoria de Registros Acadêmicos</p>
+</header>
+{% for solicitacao in solicitacao_list %}
+{% ifchanged solicitacao.solicitante %}
+<main>
+ {% if forloop.counter	!= 1 %}
+{% ifchanged solicitacao.solicitante %}
+</tbody>
+</table>
+<br>
+  
+<p>PARECER FINAL da Coordenação de Curso ou Área e encaminhamento à Coordenadoria de Registros Acadêmicos para as devidas providências.<br>
+                  [  X  ] Concordo com os pareceres dos professores
+</p>
+<p id='data' class='break-page'>Caxias do Sul, ___/___/_____, ____________________________.<br> (assinatura do Coordenador de Curso ou Área)</p>
+</main>
+
+{% endifchanged %}
+{% endif %}
+<p>Solicitante: {{ solicitacao.solicitante }} </p>
+<p>Curso: {{ solicitacao.solicitante.curso.nome }} </p>
+
+<div class='main-text'>
+<strong>SOLICITAÇÃO DE CERTIFICAÇÃO DE CONHECIMENTOS</strong>
+<p>
+À Coordenação de Curso ou Área para encaminhamento de realização de avaliação para Certificação de Conhecimentos adquiridos através de experiências previamente vivenciadas, inclusive fora do ambiente escolar, com o fim de alcançar a dispensa do componente curricular de: 
+</p>
+</div>
+<table class='table table-striped'>
+  <thead>
+    <tr>      
+      <th>Disciplina</th>
+      <th>Avaliador</th>
+      <th>Nota</th>
+      <th>Resultado</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% endifchanged %}    
+    <tr>
+      <td>{{ solicitacao.disciplina }}</td>
+      <td>{{ solicitacao.resultado.avaliador }}</td>
+      <td>{{ solicitacao.resultado.nota }}</td>
+      <td>{{ solicitacao.resultado.get_resultado_display }}</td>
+    </tr>
+   
+
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+  
+<p>PARECER FINAL da Coordenação de Curso ou Área e encaminhamento à Coordenadoria de Registros Acadêmicos para as devidas providências.<br>
+                  [  X  ] Concordo com os pareceres dos professores
+</p>
+<p id='data' class='break-page'>Caxias do Sul, ___/___/_____, ____________________________.<br> (assinatura do Coordenador de Curso ou Área)</p>
+</main>
+</body>
+
+</html>

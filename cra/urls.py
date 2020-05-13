@@ -22,6 +22,7 @@ urlpatterns = [
     path('curso/', include('curso.urls')),
     path('user/', include('user.urls')),
     path('cc/', include('cc.urls')),
+    path('relatorio/', include('relatorio.urls')),
 ]
 
 #Add Django site authentication urls (for login, logout, password management)
@@ -30,4 +31,3 @@ urlpatterns += [
 ]
 # url pra select2, busca ao solicitar disicplinas
 urlpatterns += [path('select2/', include('django_select2.urls')),]
-

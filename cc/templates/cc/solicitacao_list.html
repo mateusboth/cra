@@ -1,7 +1,8 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>Solicitações {% if view.kwargs.slug and solicitacao_list %} em {{solicitacao_list.0.semestre_solicitacao}}  {% endif %}</h1>
+<h1>Solicitações {% if view.kwargs.slug and solicitacao_list %} em {{solicitacao_list.0.semestre_solicitacao}}
+  {% endif %}</h1>
 
 <p><a href="{% url 'cc:solicitacao-create' %}">Nova solicitação</a>
   {% if view.kwargs.slug %}
@@ -11,6 +12,17 @@
   <a href="{% url 'cc:manage_resultados' slug=view.kwargs.slug %}">Resultados</a>
   <a href="{% url 'cc:disciplinas_solicitadas' slug=view.kwargs.slug %}">Por disciplina</a>
   <a href="{% url 'cc:manage_recursos' slug=view.kwargs.slug %}">Recursos</a></p>
+
+  {% comment %} Relatórios {% endcomment %}
+{% if perms.user.is_staff %}
+  <p>
+  <a href="{% url 'relatorio:homologado-pdf' slug=view.kwargs.slug %}">Homologados</a>
+  <a href="{% url 'relatorio:resultado-pdf' slug=view.kwargs.slug %}">Resultado</a>
+  <a href="{% url 'relatorio:ficha-individual-pdf' slug=view.kwargs.slug %}">Fichas individuais</a>
+  <a href="{% url 'relatorio:folha-rosto-pdf' slug=view.kwargs.slug %}">Folhas de Rosto</a>
+  </p>
+{% endif %}
+
 {% endif %}
 
 {% if solicitacao_list %}
@@ -26,7 +38,7 @@
       <th>Resultado</th>
       <th>Recursos</th>
       {% if not view.kwargs.slug %}<th>Semestre de solicitação</th>{% endif %}
-      
+
     </tr>
   </thead>
   <tbody>
@@ -34,8 +46,8 @@
     {% if solicitacao.solicitante.get_full_name == user.get_full_name %}
     <tr>
       <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
-      <td>{{ solicitacao.homologado }}</td>
-      <td>{{ solicitacao.resultado }}</td>
+      <td>{{ solicitacao.get_homologado_display }}</td>
+      <td>{{ solicitacao.resultado.get_resultado_display }}</td>
       <td>{{ solicitacao.semestre_solicitacao }}</td>
     </tr>
     {% elif perms.user.avaliador or perms.user.is_staff %}
@@ -43,12 +55,14 @@
       <td>{{ solicitacao.solicitante.curso }}</td>
       <td>{{ solicitacao.solicitante }}</td>
       <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
-      <td><a href="{% url 'cc:homologacao-create' pk=solicitacao.pk %}">{{ solicitacao.homologada }}</a></td>
-      <td><a href="{{solicitacao.resultado.get_update_url}}">{{ solicitacao.resultado }}</a></td>
-      {% if solicitacao.resultado %}<td><a href="{% url 'cc:recurso-create' pk=solicitacao.resultado.pk %}">{{ solicitacao.resultado.solicitar_recurso }}</a></td>
+      <td><a href="{% url 'cc:homologacao-create' pk=solicitacao.pk %}">{{ solicitacao.get_homologada_display }}</a></td>
+      <td><a href="{{solicitacao.resultado.get_update_url}}">{{ solicitacao.resultado.get_resultado_display }}</a></td>
+      {% if solicitacao.resultado %}<td><a
+          href="{% url 'cc:recurso-create' pk=solicitacao.resultado.pk %}">{{ solicitacao.resultado.solicitar_recurso }}</a>
+      </td>
       {% else %} <td></td> {% endif %}
       {% if not view.kwargs.slug %}<td>{{ solicitacao.semestre_solicitacao }}</td>{% endif %}
-      
+
 
     </tr>
     {% endif %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+  {% block title %}<title>Certificações de Conhecimento</title>{% endblock %}
+  <!-- Add additional CSS in static file -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/pdf.css' %}">
+</head>
+
+<body>
+
+<header>
+<p> MINISTÉRIO DA EDUCAÇÃO<br>
+Secretaria de Educação Profissional e Tecnológica<br>
+Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Sul <br>
+Campus Caxias do Sul<br>
+www.caxias.ifrs.edu.br – E-mail: gabinete@caxias.ifrs.edu.br</p>
+</header>
+<main>
+<div class='main-text'>
+<strong>HOMOLOGAÇÃO DE SOLICITAÇÕES DE CERTIFICAÇÃO DE CONHECIMENTOS</strong>
+<p>
+O DIRETOR-GERAL do Instituto Federal de Educação, Ciência e Tecnologia do
+Rio Grande do Sul – Campus Caxias do Sul, no uso de suas atribuições legais, de acordo com a
+legislação vigente e com a Instrução Normativa nº 05, de 17 de junho de 2015, TORNA
+PÚBLICO a Homologação de Solicitações de Certificação de Conhecimentos:
+</p>
+</div>
+<table class='table table-striped'>
+  <thead>
+    <tr>      
+      <th>Solicitante</th>
+      <th>Disciplina</th>
+      <th>Homologado</th>
+      {% if not view.kwargs.slug %}<th>Semestre de solicitação</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for solicitacao in solicitacao_list %}
+    <tr>
+      <td>{{ solicitacao.solicitante }}</td>
+      <td>{{ solicitacao.disciplina }}</td>
+      <td>{{ solicitacao.get_homologada_display }}</td>
+      {% if not view.kwargs.slug %}<td>{{ solicitacao.semestre_solicitacao }}</td>{% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+<p id='data'>Caxias do Sul, {% now "d" %} de {% now "F" %} de {% now "Y" %}.</p>
+
+
+<hr>
+</main>
+
+</body>
+
+</html>
