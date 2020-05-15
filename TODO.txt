@@ -1,0 +1,7 @@
+1) Publicar no heroku com as adaptações necessárias
+2) Arrumar permissões de acesso as views
+3) Rever todos o arquivos e criar comentários e documentação adequada
+3.1) Ajustar e configura o django admin
+4) Criar testes para todo o código
+
+5) Transformar app calendario individual, criar git repositorio so pra ele e tornar público
