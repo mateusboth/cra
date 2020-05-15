@@ -39,6 +39,11 @@ class ResultadoPdfView(WeasyTemplateResponseMixin, RelatorioSolicitacaoSemestreV
     def get_pdf_filename(self):
         return f'resultado-{self.kwargs.get("slug")}.pdf'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(homologada='NAO') 
+        return qs
+
 
 class FichaIndividualPdfView(WeasyTemplateResponseMixin, RelatorioSolicitacaoSemestreView):
     # output of MyModelView rendered as PDF with hardcoded CSS
@@ -50,7 +55,10 @@ class FichaIndividualPdfView(WeasyTemplateResponseMixin, RelatorioSolicitacaoSem
     def get_pdf_filename(self):
         return f'fichas individuais-{self.kwargs.get("slug")}.pdf'
 
-
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(homologada='NAO') 
+        return qs
 # from django.contrib.auth import get_user_model
 # User = get_user_model()
 
@@ -63,3 +71,8 @@ class FolhaRostoPdfView(WeasyTemplateResponseMixin, RelatorioSolicitacaoSemestre
 
     def get_pdf_filename(self):
         return f'folha de rosto-{self.kwargs.get("slug")}.pdf'
+    
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(homologada='NAO') 
+        return qs

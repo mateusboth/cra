@@ -95,7 +95,7 @@ class AvaliadorForm(forms.ModelForm):
                     'nome_completo__icontains',
                     'matricula__icontains'],
                 attrs={'data-minimum-input-length': 0,
-                'style': 'width: 100%;, min-width:80px'}),
+                'style': 'width: 100%; min-width:80px'}),
         }
 
     def __init__(self, *args, **kwargs):

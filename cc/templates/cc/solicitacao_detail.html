@@ -6,14 +6,13 @@
 <p>Aluno: {{ solicitacao.solicitante }}</p>
 <p>Disciplina: {{solicitacao.disciplina}} </p>
 <p>Justificativa: {{ solicitacao.justificativa }} </p>
-<p>Homologada: {{ solicitacao.homologada }} </p>
+<p>Homologada: {{ solicitacao.get_homologada_display }} </p>
 <p>Avaliador: {{ solicitacao.resultado.avaliador }} </p>
 <p>Nota: {{ solicitacao.resultado.nota }} </p>
 <p>Solicitou Recurso: {{ solicitacao.resultado.solicitar_recurso }} </p>
-<p>Resultado do recurso: {{ solicitacao.resultado.resultado_recurso }} </p>
+<p>Resultado do recurso: {{ solicitacao.resultado.resultado_recurso }} -  {{ solicitacao.resultado.get_resultado_recurso_display}} </p>
 <p>Nota anterior: {{ solicitacao.resultado.nota_anterior }} </p>
-<p>Nota pos recursos: {{ solicitacao.recurso }} </p>
-<p>Resultado: {{ solicitacao.resultado }} </p>
+<p>Resultado: {{ solicitacao.resultado.get_resultado_display }} </p>
 <p>Semestre de solicitação: {{ solicitacao.semestre_solicitacao }} </p>
 
 {% endblock %}

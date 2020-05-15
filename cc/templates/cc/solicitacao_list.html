@@ -2,29 +2,62 @@
 
 {% block content %}
 <h1>Solicitações {% if view.kwargs.slug and solicitacao_list %} em {{solicitacao_list.0.semestre_solicitacao}}
+  {% elif perms.user.avaliador %} Geral
   {% endif %}</h1>
+<div class="btn-group dropup">
+{% if perms.user.avaliador %}
+<div class="dropdown">
+  <a class="btn btn-success btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+    aria-haspopup="true" aria-expanded="false">
+    Calendários
+  </a>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    {% for cal in calendario_list %}
+    <a class="dropdown-item" href="{% url 'cc:solicitacoes' slug=cal.slug %}">{{ cal }} </a>
+    {% endfor %}
+  </div>
+</div>
+ {% endif %}
 
-<p><a href="{% url 'cc:solicitacao-create' %}">Nova solicitação</a>
-  {% if view.kwargs.slug %}
-  <a href="{% url 'cc:manage_homologacoes' slug=view.kwargs.slug %}">Homologar solicitações</a>
-  <a href="{% url 'cc:manage_ausentes' slug=view.kwargs.slug %}">Ausentes</a>
-  <a href="{% url 'cc:manage_avaliadores' slug=view.kwargs.slug %}">Atribuir avaliadores</a>
-  <a href="{% url 'cc:manage_resultados' slug=view.kwargs.slug %}">Resultados</a>
-  <a href="{% url 'cc:disciplinas_solicitadas' slug=view.kwargs.slug %}">Por disciplina</a>
-  <a href="{% url 'cc:manage_recursos' slug=view.kwargs.slug %}">Recursos</a></p>
 
-  {% comment %} Relatórios {% endcomment %}
+{% if not perms.user.avaliador %}
+<a href="{% url 'cc:solicitacao-create' %}" class="btn btn-success">Nova solicitação</a>
+{% endif %}
+{% if view.kwargs.slug %}
+<div class="dropdown">
+  <a class="btn btn-success btn-sm dropdown-toggle " href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+    aria-haspopup="true" aria-expanded="false">
+    Ações
+  </a>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item" href="{% url 'cc:manage_homologacoes' slug=view.kwargs.slug %}">Homologar solicitações</a>
+    <a class="dropdown-item" href="{% url 'cc:manage_ausentes' slug=view.kwargs.slug %}">Ausentes</a>
+    <a class="dropdown-item" href="{% url 'cc:manage_avaliadores' slug=view.kwargs.slug %}">Atribuir avaliadores</a>
+    <a class="dropdown-item" href="{% url 'cc:manage_resultados' slug=view.kwargs.slug %}">Resultados</a>
+    <a class="dropdown-item" href="{% url 'cc:disciplinas_solicitadas' slug=view.kwargs.slug %}">Por disciplina</a>
+    <a class="dropdown-item" href="{% url 'cc:manage_recursos' slug=view.kwargs.slug %}">Recursos</a>
+</div>
+</div>
+{% comment %} Relatórios {% endcomment %}
 {% if perms.user.is_staff %}
-  <p>
-  <a href="{% url 'relatorio:homologado-pdf' slug=view.kwargs.slug %}">Homologados</a>
-  <a href="{% url 'relatorio:resultado-pdf' slug=view.kwargs.slug %}">Resultado</a>
-  <a href="{% url 'relatorio:ficha-individual-pdf' slug=view.kwargs.slug %}">Fichas individuais</a>
-  <a href="{% url 'relatorio:folha-rosto-pdf' slug=view.kwargs.slug %}">Folhas de Rosto</a>
-  </p>
+
+<div class="dropdown">
+  <a class="btn btn-success btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+    aria-haspopup="true" aria-expanded="false">
+    Relatórios
+  </a>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item" href="{% url 'relatorio:homologado-pdf' slug=view.kwargs.slug %}">Homologados</a>
+    <a class="dropdown-item" href="{% url 'relatorio:resultado-pdf' slug=view.kwargs.slug %}">Resultado</a>
+    <a class="dropdown-item" href="{% url 'relatorio:ficha-individual-pdf' slug=view.kwargs.slug %}">Fichas individuais</a>
+    <a class="dropdown-item" href="{% url 'relatorio:folha-rosto-pdf' slug=view.kwargs.slug %}">Folhas de Rosto</a>
+  </div>
+</div>
+  
 {% endif %}
 
 {% endif %}
-
+</div>
 {% if solicitacao_list %}
 <table class='table table-striped table-hover table-responsive'>
   <thead>
@@ -46,16 +79,34 @@
     {% if solicitacao.solicitante.get_full_name == user.get_full_name %}
     <tr>
       <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
-      <td>{{ solicitacao.get_homologado_display }}</td>
-      <td>{{ solicitacao.resultado.get_resultado_display }}</td>
+      <td>{{ solicitacao.get_homologada_display }}</td>
+      <td>
+        {% if solicitacao.get_homologada_display == 'Homologado' %}
+        {{ solicitacao.resultado.get_resultado_display}}
+        {% else %} - {% endif %}
+      </td>
+      {% if solicitacao.resultado %}
+      <td>
+      {% comment %} TODO arrumar logica dos recursos  possivlemente remover do aluno incluir nota{% endcomment %}
+      {% if solicitacao.resultado.resultado_recurso %}
+        {{ solicitacao.resultado.get_resultado_recurso_display }}
+        {% elif solicitacao.resultado == 'APR' or  solicitacao.resultado == 'REP' %}
+        <a href="{% url 'cc:recurso-create' pk=solicitacao.resultado.pk %}">
+         Solicitar recurso</a>
+        {% endif %}
+      
+         
+      </td>
+      {% else %} <td> - </td> {% endif %}
       <td>{{ solicitacao.semestre_solicitacao }}</td>
     </tr>
     {% elif perms.user.avaliador or perms.user.is_staff %}
     <tr>
-      <td>{{ solicitacao.solicitante.curso }}</td>
+      <td>{{ solicitacao.solicitante.curso.abreviacao }}</td>
       <td>{{ solicitacao.solicitante }}</td>
       <td><a href="{{ solicitacao.get_absolute_url }}">{{ solicitacao.disciplina }}</a></td>
-      <td><a href="{% url 'cc:homologacao-create' pk=solicitacao.pk %}">{{ solicitacao.get_homologada_display }}</a></td>
+      <td><a href="{% url 'cc:homologacao-create' pk=solicitacao.pk %}">{{ solicitacao.get_homologada_display }}</a>
+      </td>
       <td><a href="{{solicitacao.resultado.get_update_url}}">{{ solicitacao.resultado.get_resultado_display }}</a></td>
       {% if solicitacao.resultado %}<td><a
           href="{% url 'cc:recurso-create' pk=solicitacao.resultado.pk %}">{{ solicitacao.resultado.solicitar_recurso }}</a>
@@ -71,6 +122,6 @@
 </table>
 
 {% else %}
-<p>Não solicitações registradas.</p>
+<p>Não há solicitações registradas.</p>
 {% endif %}
 {% endblock %}

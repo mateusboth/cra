@@ -17,7 +17,7 @@
   <!-- favicon -->
   <link rel='shortcut icon' type='image/x-icon'
     href='https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme/favicons/favicon-16x16.png' />
-{{ form.media.css }}
+  {{ form.media.css }}
 
 </head>
 
@@ -58,47 +58,25 @@
       <div class="col-sm-2">
         {% block sidebar %}
         <ul class="sidebar-nav">
-          {% comment %} <li><a href="{% url 'home' %}">Home</a></li>
-          {% endcomment %}
-          <li><a href="/admin">admin</a></li>
-          <li><a href=" {% url 'cc:solicitacoes' %}">Solicitacões</a></li> 
-        </ul>
-        <ul class="sidebar-nav">
           {% if user.is_authenticated %}
           <li>User: {{ user.get_full_name }}</li>
-          {% comment %} <li><a href="{% url 'my-borrowed' %}">My Borrowed</a></li> {% endcomment %}
           <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
           {% else %}
           <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
           {% endif %}
-        </ul>
-
-        {% if user.is_avaliador %}
-        <hr />
-        <ul class="sidebar-nav">
-          <li>Avaliador</li>
-
+          <hr>
+          {% comment %} <li><a href="{% url 'home' %}">Home</a></li>
+          {% endcomment %}
+          <li><a href=" {% url 'cc:solicitacoes' %}">Solicitacões</a></li>
+          {% if user.is_staff %}
+          <li><a href="/admin">Administração</a></li>
+          <li><a href="{% url 'calendario:calendarios'%}">Calendários</a></li>
+          <li><a href="{% url 'curso:cursos'%}">Cursos</a></li>
+          <li><a href="{% url 'curso:disciplinas'%}">Disciplinas</a></li>
+          <li><a href="{% url 'users'%}">Usuários</a></li>
           {% endif %}
-
-          {% comment %} {% if user.is_staff %} {% endcomment %}
-          <hr />
-          <ul class="sidebar-nav">
-            <li><a href="{% url 'calendario:calendarios'%}">Calendários</a></li>
-            <li><a href="{% url 'curso:cursos'%}">Cursos</a></li>
-            <li><a href="{% url 'curso:disciplinas'%}">Disciplinas</a></li>
-            <li><a href="{% url 'users'%}">Usuários</a></li>
-
-            {% comment %} <li>Staff</li>
-            
-            {% endcomment %}
-          </ul>
-          {% comment %} {% endif %} {% endcomment %}
-          <ul class="sidebar-nav">
-            {% if perms.user.avaliador %}
-            <li><a href="">É avaliador</a></li>
-            {%endif%}
-          </ul>
-          {% endblock %}
+        </ul>
+        {% endblock %}
       </div>
       <div class="col-sm-10 ">
         {% block message %}
@@ -135,8 +113,14 @@
     </div>
   </div>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% comment %} Bootstrap {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+{% comment %} django-select2 {% endcomment %}
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ 
 {% load static %}
 <script src={% static 'js/scripts.js' %}></script>
 {{ form.media.js }}

@@ -42,7 +42,8 @@ PÚBLICO o Resultado de Solicitações de Certificação de Conhecimentos:
     <tr>
       <td>{{ solicitacao.solicitante }}</td>
       <td>{{ solicitacao.disciplina }}</td>
-      <td>{{ solicitacao.resultado.nota }}</td>
+      <td>{% if solicitacao.resultado.nota is not None%}{{ solicitacao.resultado.nota }}{% else %}-{% endif %}
+      </td>
       <td>{{ solicitacao.resultado.get_resultado_display }}</td>
     </tr>
     {% endfor %}

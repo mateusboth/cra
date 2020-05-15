@@ -33,6 +33,7 @@ class SolicitacoesGenericList(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
+        context['calendario_list'] = Calendario.objects.all()
         return context
 
     def get_queryset(self):
@@ -67,10 +68,15 @@ class HomologacaoCreate(PermissionRequiredMixin, UpdateView):
     fields = ['solicitante', 'disciplina', 'cursou_anteriormente']
     permission_required = 'user.staff'
     template_name = 'create_form_generic.html'
-    success_url = reverse_lazy('cc:solicitacoes')
+    # success_url = reverse_lazy('cc:solicitacoes')
 
     def get_success_url(self):
-        return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
+        if self.kwargs.get('slug'):
+            return reverse_lazy('cc:solicitacoes', kwargs={'slug': self.kwargs['slug']})
+        else:
+            sol = Solicitacao.objects.get(pk=self.kwargs['pk'])
+            return reverse_lazy('cc:solicitacoes', kwargs={'slug': sol.semestre_solicitacao.slug})
+
         
     def form_valid(self, form):
         form_homologacao_valid(form)
@@ -116,6 +122,7 @@ class AusenteFormSetView(ModelFormSetView):
     def get_queryset(self):
         slug = self.kwargs['slug']
         return super(AusenteFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
+    # TODO add formset_invalid para o raro caso do aluno ja ter nota e tentar marcar como ausente para exibir a mensagem
 
 
 class AvaliadorFormSetView(PermissionRequiredMixin, ModelFormSetView):
@@ -133,6 +140,7 @@ class AvaliadorFormSetView(PermissionRequiredMixin, ModelFormSetView):
     def get_queryset(self):
         slug = self.kwargs['slug']
         return super(AvaliadorFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug)
+        # TODO filtrar pelo curso se coordenador
 
 
 class ResultadoFormSetView(PermissionRequiredMixin, ModelFormSetView):
@@ -143,7 +151,7 @@ class ResultadoFormSetView(PermissionRequiredMixin, ModelFormSetView):
     factory_kwargs = {'extra': 0}
     permission_required = 'user.can_add_resultado'
     form_class = ResultadoForm
-
+    # TODO ver como exibir mensagem de erro quando nota for invalida, adicionar a messages
     def get_queryset(self):
         slug = self.kwargs['slug']
         return super(ResultadoFormSetView, self).get_queryset().filter(solicitacao__semestre_solicitacao__slug=slug, resultado='PEN')

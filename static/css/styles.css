@@ -31,3 +31,6 @@ a:any-link{
     display: inline;
 }
 
+.largura-minima {
+    min-width: 180px;
+}
