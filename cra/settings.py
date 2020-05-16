@@ -25,7 +25,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ocl!p77wyn0pi*2o0(bdjq^2l6jbdi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['lit-citadel-38246.herokuapp.com', '127.0.0.1']
+
 
 LOGIN_REDIRECT_URL = 'cc'
 
