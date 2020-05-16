@@ -15,8 +15,8 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
   <!-- favicon -->
-  <link rel='shortcut icon' type='image/x-icon'
-    href='https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme/favicons/favicon-16x16.png' />
+  {% comment %} <link rel='shortcut icon' type='image/x-icon'
+    href='https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme/favicons/favicon-16x16.png' /> {% endcomment %}
   {{ form.media.css }}
 
 </head>
@@ -30,19 +30,20 @@
         <div class="col-12 col-lg-8 header__title">
           <div class="row">
             <div class="col-12 col-md-2 d-none d-md-block">
-              <a href="https://ifrs.edu.br/caxias/"><img
+            logo instituição
+              {% comment %} <a href="https://ifrs.edu.br/caxias/"><img
                   src="https://ifrs.edu.br/caxias/wp-content/themes/ifrs-portal-theme-campus/img/if.png"
-                  alt="Logo do IF" class="mx-auto"></a>
+                  alt="Logo do IF" class="mx-auto"></a> {% endcomment %}
             </div>
             <div class="col-12 col-md-10">
               <div class="row">
                 <div class="col-12">
-                  <p class="title-ifrs">Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Sul</p>
+                  <p class="title">Nome da Instituição</p>
                 </div>
               </div>
               <div class="row">
                 <div class="col-12">
-                  <h1 class="title-campus">Campus Caxias do Sul</h1>
+                  <h1 class="title-campus">Campus Cidade</h1>
                 </div>
               </div>
             </div>
