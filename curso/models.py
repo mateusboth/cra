@@ -17,7 +17,7 @@ class Curso(models.Model):
     matriz = models.CharField(
         max_length=4, help_text='Ano de aprovação de matriz do curso')
     is_active = models.BooleanField('Ativo', default=True)
-    slug = models.SlugField(max_length=20)
+    slug = models.SlugField(max_length=40)
 
     class Meta():
         ordering = ['-is_active', 'nome']
@@ -37,7 +37,7 @@ class Curso(models.Model):
 class Disciplina(models.Model):
     """Modelo disciplina"""
     codigo = models.CharField(("Código"), max_length=12, primary_key=True, unique=True)
-    nome = models.CharField(("Nome da disciplina"), max_length=50)
+    nome = models.CharField(("Nome da disciplina"), max_length=100)
     curso = models.ManyToManyField('Curso')
 
     def __str__(self):
