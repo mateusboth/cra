@@ -2,7 +2,6 @@
 Modelos de cursos e disciplinas vinculadas a eles
 """
 from django.db import models
-from django.urls import reverse
 from cra.snippets import unique_slugify
 
 
@@ -12,7 +11,7 @@ class Curso(models.Model):
     abreviacao = models.CharField(
         'Abreviação', max_length=3, help_text='Máximo 3 letras')
     matriz = models.CharField(
-        max_length=4, help_text='Ano de aprovação de matriz do curso')
+        max_length=4, help_text='Ano de aprovação da matriz do curso')
     is_active = models.BooleanField('Ativo', default=True)
     slug = models.SlugField(max_length=40, unique=True)
 
@@ -36,6 +35,9 @@ class Disciplina(models.Model):
         ("Código"), max_length=12, primary_key=True, unique=True)
     nome = models.CharField(("Nome da disciplina"), max_length=100)
     curso = models.ManyToManyField('Curso')
+
+    class Meta():
+        ordering = ['nome', 'codigo']
 
     def __str__(self):
         return f'{self.codigo} - {self.nome}'
