@@ -8,4 +8,5 @@
 3.1) Ajustar e configura o django admin
 4) Talvez remover solicitações e resultado do admin
 5) Criar testes para todo o código
+5.1) Deletar testes do app calendario forms e views que não existem mais
 
