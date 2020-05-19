@@ -1,7 +1,5 @@
 """Model Calendario com datas de inicio e fim para solicitação e recursos"""
-from django.db import models
-from django.urls import reverse
-from django.db import transaction
+from django.db import models, transaction
 from django.core.exceptions import ValidationError
 from cra.snippets import unique_slugify
 
@@ -35,18 +33,13 @@ class Calendario(models.Model):
     def __str__(self):
         return f'{self.ano}/{self.semestre}'
 
-    def get_absolute_url(self):
-        return reverse("calendario:calendario-detail", kwargs={"slug": self.slug})
-
-    def get_delete_url(self):
-        return reverse("calendario:calendario-delete", kwargs={"slug": self.slug})
-
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs): # pylint: disable=arguments-differ
         """Garante que exista apenas um is_active=True e define a slug"""
         slug_str = f'{self.ano}-{self.semestre}'
         unique_slugify(self, slug_str)
         if self.is_active:
-            with transaction.atomic():
+            # Garante que intereção seja atomica com o DB e so um esteja ativo
+            with transaction.atomic(): 
                 Calendario.objects.filter(
                     is_active=True).update(is_active=False)
                 return super(Calendario, self).save(*args, **kwargs)
@@ -54,18 +47,13 @@ class Calendario(models.Model):
             return super(Calendario, self).save(*args, **kwargs)
 
     def clean(self):
-        """Garante que data de inicio é antes de data fim"""
+        """Raise ValidationError se a data de inicio é depois da data fim"""
         super(Calendario, self).clean()
         if self.inicio_solicitacoes > self.fim_solicitacoes:
             raise ValidationError(
-                'Data de fim das solicitações deve ser posterior a de inicio')
+                'Data de fim das solicitações deve ser posterior a de inicio',
+                code='Datas inválidas')
         if self.inicio_recursos > self.fim_recursos:
             raise ValidationError(
-                'Data de fim dos recursos deve ser posterior a de inicio')
-
-    def get_fields(self):
-        """
-        Permite usar for no template para exibir todos os atributos do objeto
-        ex? {% for key, val in calendario.get_fields %}
-        """
-        return [(field.verbose_name, field.value_to_string(self)) for field in Calendario._meta.fields]
+                'Data de fim dos recursos deve ser posterior a de inicio',
+                code='Datas inválidas')
