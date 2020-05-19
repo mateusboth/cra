@@ -71,10 +71,6 @@
           <li><a href=" {% url 'cc:solicitacoes' %}">Solicitacões</a></li>
           {% if user.is_staff %}
           <li><a href="/admin">Administração</a></li>
-          <li><a href="{% url 'calendario:calendarios'%}">Calendários</a></li>
-          <li><a href="{% url 'curso:cursos'%}">Cursos</a></li>
-          <li><a href="{% url 'curso:disciplinas'%}">Disciplinas</a></li>
-          <li><a href="{% url 'users'%}">Usuários</a></li>
           {% endif %}
         </ul>
         {% endblock %}

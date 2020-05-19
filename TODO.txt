@@ -1,6 +1,4 @@
-1) Revisar e documentar app calendario
-1.1)Transformar app calendario individual, criar git repositorio so pra ele e tornar público
-1.1.1) Remover permisões de acesso
+
 
 2) Rever todos o arquivos e criar comentários e documentação adequada
 2.1) Curso, alterar representação par ao Nome completo do curso

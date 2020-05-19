@@ -18,8 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('calendario/', include('calendario.urls')),
-    path('curso/', include('curso.urls')),
     path('user/', include('user.urls')),
     path('cc/', include('cc.urls')),
     path('relatorio/', include('relatorio.urls')),
@@ -29,5 +27,6 @@ urlpatterns = [
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
 ]
+
 # url pra select2, busca ao solicitar disicplinas
 urlpatterns += [path('select2/', include('django_select2.urls')),]

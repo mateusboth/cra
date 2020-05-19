@@ -2,11 +2,12 @@
 from django.db import models
 from django.urls import reverse
 from django.db import transaction
+from django.core.exceptions import ValidationError
 from cra.snippets import unique_slugify
 
 
 class Calendario(models.Model):
-    """Calendario referente as datas do semestre"""
+    """Calendario com ano/semetre com datas de ínicio e fim das solicitações e recursos"""
     ano = models.CharField(
         ("Ano"), max_length=4,
         help_text='Ano dos pedidos, ex: 2020')
@@ -41,7 +42,7 @@ class Calendario(models.Model):
         return reverse("calendario:calendario-delete", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
-        """Garante que exista apenas um is_active=True e define a slug"""    
+        """Garante que exista apenas um is_active=True e define a slug"""
         slug_str = f'{self.ano}-{self.semestre}'
         unique_slugify(self, slug_str)
         if self.is_active:
@@ -52,6 +53,19 @@ class Calendario(models.Model):
         else:
             return super(Calendario, self).save(*args, **kwargs)
 
+    def clean(self):
+        """Garante que data de inicio é antes de data fim"""
+        super(Calendario, self).clean()
+        if self.inicio_solicitacoes > self.fim_solicitacoes:
+            raise ValidationError(
+                'Data de fim das solicitações deve ser posterior a de inicio')
+        if self.inicio_recursos > self.fim_recursos:
+            raise ValidationError(
+                'Data de fim dos recursos deve ser posterior a de inicio')
+
     def get_fields(self):
-        """ Permite usar for no template para exibir todos os atributos do objeto"""
+        """
+        Permite usar for no template para exibir todos os atributos do objeto
+        ex? {% for key, val in calendario.get_fields %}
+        """
         return [(field.verbose_name, field.value_to_string(self)) for field in Calendario._meta.fields]
