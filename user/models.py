@@ -3,13 +3,9 @@ from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.urls import reverse
 from cra.snippets import unique_slugify
-from .managers.UserManager import UserManager
-from django.contrib.auth.models import Group, Permission
-
-
 from curso.models import Curso
+from .managers.UserManager import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -35,17 +31,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email', 'nome_completo']
 
     class Meta:
-        verbose_name = ('user')
-        verbose_name_plural = ('users')
+        verbose_name = ('usuário')
+        verbose_name_plural = ('usuários')
         ordering = ['-matricula', 'nome_completo']
         permissions = [
-            ('can_add_resultado', 'Pode adicionar resultado a solicitacao'),
             ('can_add_avaliador', 'Pode atribuir avaliador a solicitacao')
         ]
 
     def get_full_name(self):
         '''
-        Returns the  name, with a space in between.
+        Returns the  nome_completo.
         '''
         return self.nome_completo
 
@@ -65,25 +60,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.nome_completo
 
-    def get_absolute_url(self):
-        return reverse("user-detail", kwargs={"slug": self.slug})
-
     def save(self, *args, **kwargs):
         """
         Criar slug e adiciona permissões/groups se avaliador ou coordenador
         """
         slug_str = f'{self.nome_completo} {self.curso}'
         unique_slugify(self, slug_str)
-
         super(User, self).save(*args, **kwargs)
-        if self.is_avaliador:
-            add_group = Group.objects.get(name='Avaliadores')
-            self.groups.add(add_group)
-            # add_res = Permission.objects.get(codename='can_add_resultado')
-            # self.user_permissions.add(add_res)
-        if self.is_coordenador:
-            add_group = Group.objects.get(name='Coordenadores')
-            self.groups.add(add_group)
-            # add_aval = Permission.objects.get(codename='can_add_avaliador')
-            # self.user_permissions.add(add_aval)
-

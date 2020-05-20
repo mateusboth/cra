@@ -1,9 +1,8 @@
 
 
 2) Rever todos o arquivos e criar comentários e documentação adequada
-2.1) Curso, alterar representação par ao Nome completo do curso
 2.2) Arrumar permissões de acesso as views
-3) Deixar, calendario, curso e user somente no admin
+3) Deixar, e user somente no admin
 3.1) Melhorar User no Admin, atualmente não tem nada
 3.1) Ajustar e configura o django admin
 4) Talvez remover solicitações e resultado do admin
