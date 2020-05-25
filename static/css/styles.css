@@ -34,3 +34,15 @@ a:any-link{
 .largura-minima {
     min-width: 180px;
 }
+
+.cancel-link {
+    display: inline-block;
+    vertical-align: middle;
+    height: 15px;
+    line-height: 15px;
+    background: #ddd;
+    border-radius: 4px;
+    padding: 10px 15px;
+    color: #333;
+    margin: 0 0 0 10px;
+}

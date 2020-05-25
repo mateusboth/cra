@@ -104,7 +104,7 @@ class Resultado(models.Model):
     )
 
     def __str__(self):
-        return self.resultado
+        return self.resultado #get_resultado_display() TODO
 
     def get_absolute_url(self):
         """Busca url de uma solicitação especifica"""

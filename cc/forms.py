@@ -62,6 +62,15 @@ class SolicitacaoForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Não é permitido solicitar duas vezes a mesma disciplina!', code='repetido')
 
+class HomologarForm(forms.Form):
+    HOMOLOGACAO = (
+        ('SIM', 'Homologado'),
+        ('NAO', 'Não Homologado'),
+        ('PEN', 'Pendente'),
+    )
+    homologada = forms.ChoiceField(choices=HOMOLOGACAO)
+    
+
 
 def form_homologacao_valid(form):
     """Ajusta o reusltaod de homologada conforme valor de cursou_anteriormente e cria resultado"""
@@ -73,6 +82,7 @@ def form_homologacao_valid(form):
         form.instance.homologada = 'PEN'
     # Verifica se ja existe um resultado associado
     r = Resultado.objects.filter(solicitacao=form.instance.pk)
+    
     if form.instance.homologada != 'SIM':
         # deleta resultado se existir
         r.delete()
