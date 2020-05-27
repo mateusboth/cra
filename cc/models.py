@@ -39,7 +39,8 @@ class Solicitacao(models.Model):
         choices=HOMOLOGACAO,
         default='PEN'
     )
-    semestre_solicitacao = models.ForeignKey(Calendario, on_delete=models.CASCADE, null=True)
+    semestre_solicitacao = models.ForeignKey(
+        Calendario, on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ['semestre_solicitacao', 'solicitante', 'disciplina']
@@ -47,6 +48,8 @@ class Solicitacao(models.Model):
             models.UniqueConstraint(
                 fields=['solicitante', 'disciplina'], name='unique_solicitação')
         ]
+        verbose_name = "Solicitação"
+        verbose_name_plural = "Solicitações"
 
     def __str__(self):
         return f'{self.disciplina} {self.solicitante} '
@@ -54,9 +57,11 @@ class Solicitacao(models.Model):
     def get_absolute_url(self):
         """Busca url de uma solicitação especifica"""
         return reverse("cc:solicitacao-detail", kwargs={"pk": self.pk})
-    
+
+
 def validate_nota(nota):
-    if 0 > nota or 10 < nota:
+    """Verifica se a nota esta entre 0-10"""
+    if nota < 0 or nota > 10:
         raise ValidationError(
             ('%(nota)s não esta entre 0-10.'),
             params={'nota': nota},
@@ -78,10 +83,11 @@ class Resultado(models.Model):
 
     solicitacao = models.OneToOneField(
         "Solicitacao", on_delete=models.CASCADE)
-    nota = models.DecimalField(decimal_places=1, max_digits=3,
+    nota = models.DecimalField(decimal_places=2, max_digits=4,
                                validators=[validate_nota], blank=True, null=True)
     avaliador = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
+        limit_choices_to={'is_avaliador': True})
     ausente = models.BooleanField(default=False)
     resultado = models.CharField(
         max_length=3,
@@ -89,12 +95,11 @@ class Resultado(models.Model):
         blank=True,
         default='PEN'
     )
-    # TODO arrumar data_resultado
     data_resultado = models.DateTimeField(
-        ("Data do resultado"), auto_now_add=True)
+        ("Data do resultado"), auto_now=True)
     # Recursos
     solicitar_recurso = models.BooleanField(default=False)
-    nota_anterior = models.DecimalField(decimal_places=1, max_digits=3,
+    nota_anterior = models.DecimalField(decimal_places=2, max_digits=4,
                                         validators=[validate_nota],
                                         blank=True, null=True)
     resultado_recurso = models.CharField(
@@ -104,7 +109,7 @@ class Resultado(models.Model):
     )
 
     def __str__(self):
-        return self.resultado #get_resultado_display() TODO
+        return self.get_resultado_display()
 
     def get_absolute_url(self):
         """Busca url de uma solicitação especifica"""
@@ -125,7 +130,7 @@ class Resultado(models.Model):
             else:
                 self.resultado = 'REP'
         super(Resultado, self).save(*args, **kwargs)
-    
+
     def clean(self, *args, **kwargs):
         if self.ausente and self.nota is not None:
             raise ValidationError(
