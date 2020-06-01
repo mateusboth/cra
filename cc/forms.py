@@ -120,3 +120,11 @@ class ResultadoForm(forms.ModelForm):
         if avaliador is not None and not avaliador.is_staff:
             self.instance.avaliador = avaliador
         self.fields['solicitacao'].disabled = True
+
+class HomologarForm(forms.Form):
+    HOMOLOGACAO = (
+        ('SIM', 'Homologado'),
+        ('NAO', 'Não Homologado'),
+        ('PEN', 'Pendente'),
+    )
+    homologada = forms.ChoiceField(choices=HOMOLOGACAO)
